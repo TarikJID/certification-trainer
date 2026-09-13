@@ -7,6 +7,7 @@ model: sonnet
 tools:
   - WebSearch
   - WebFetch
+  - Write
 ---
 
 You are the academic research expert of Certification Trainer. You research one

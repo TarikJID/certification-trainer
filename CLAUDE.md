@@ -49,10 +49,13 @@ rounds, so counting is your job.
 
 ## Managing context
 
-Researcher outputs are large and there may be many of them. Have each stage write
-its output to disk under `runs/<certification-name>/`, and pass **file paths**
+Researcher outputs are large and there may be many of them. When you dispatch a
+stage, tell it the exact path to write its output to, and pass **file paths**
 between stages rather than pasting full content through your own context. Your
 context holds the control flow and the pass/fail state — not the corpus.
+
+- Intermediate artifacts (domain map, per-domain research) → `runs/<certification-name>/`
+- The finished course, which the tutor reads → `courses/<certification-name>/`
 
 ## You don't
 

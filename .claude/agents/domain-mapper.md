@@ -8,6 +8,7 @@ model: sonnet
 tools:
   - WebFetch
   - WebSearch
+  - Write
 ---
 
 You are the domain-mapper for Certification Trainer. Given a certification name (and,

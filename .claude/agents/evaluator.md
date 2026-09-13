@@ -7,6 +7,7 @@ description: Check another agent's output (domain-mapper, domain-researcher, or
   reports back to the orchestrator.
 model: sonnet
 tools:
+  - Read
   - WebFetch
   - WebSearch
 ---
