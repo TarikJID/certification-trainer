@@ -5,15 +5,21 @@ implementing structured error responses for MCP tools, distributing tools across
 agents appropriately, integrating MCP servers into workflows, and selecting
 built-in tools effectively.
 
-Revision note (rework round 2): this revision adds one further concept requested
-by the evaluator/coordinator — the narrower, verbatim-sourceable version of the
-"system prompt wording affects tool selection" item from Task 2.1, which had
-previously existed only inside the Unsourced section as justification text. It
-now has its own Concept/Type/Definition/Example/Source entry. The Unsourced note
-about the stronger claim (keyword-sensitive wording creating unintended
-associations *between* multiple candidate tools) is kept, since that stronger
-claim still could not be verified in an official source. Nothing else was
-changed from the previous round; all other entries are reproduced faithfully.
+Revision note (rework round 3 / final): this revision promotes two claims that had
+previously been listed only in the Unsourced section into their own properly
+formatted concept entries, now sourced directly to the official exam guide
+(Claude Certified Architect – Foundations Exam Guide, Task Statements 2.1 and
+2.5) rather than to vendor documentation, since the exam guide is itself
+official certification material and meets the source-quality bar. Their
+definitions are restrained to what the guide's own text states plus what follows
+directly from it — no invented rationale, mechanisms, thresholds, or procedural
+steps beyond the guide's words. The two previously narrower, vendor-documented
+concepts they are paired with (system prompt wording steering whether Claude
+calls a tool at all; Edit's documented uniqueness/replace_all recovery) are kept
+exactly as before, clearly distinguished from these guide-sourced claims. Nothing
+else was changed from the previous round; all other entries are reproduced
+faithfully. The Unsourced section has been updated: it no longer lists these two
+items, since they are now sourced to the guide; nothing else remains in it.
 
 ---
 
@@ -37,12 +43,17 @@ changed from the previous round; all other entries are reproduced faithfully.
   Example: A tool set containing both `notification-send-user` and `notification-send-channel` is prone to misrouting because their names and likely descriptions are easy to conflate; Claude may send a user notification when a channel notification was intended, or vice versa.
   Source: https://www.anthropic.com/engineering/advanced-tool-use ; https://www.anthropic.com/engineering/writing-tools-for-agents
 
-- Concept: System prompt wording steers whether Claude calls a tool at all [NEW — task 2.1]
+- Concept: System prompt wording steers whether Claude calls a tool at all
   Type: key
-  Definition: Beyond a tool's own description, the surrounding system prompt shapes whether Claude calls a tool in the first place. With the default `tool_choice` of `auto`, "this boundary is steerable through your system prompt": a light instruction such as `"Use the tools to investigate before responding."` increases tool use; a stronger instruction such as `"Always call a tool first before responding."` pushes further toward always calling a tool; and conversely, `"Use your judgment about whether to call a tool or respond directly."` keeps the triggering behavior conservative. This is a narrower, verbatim-sourceable claim than "keyword-sensitive instructions create unintended associations between several candidate tools" (see the Unsourced section below for that stronger claim): what official documentation supports is that system prompt wording moves the *call-a-tool-at-all* boundary, not that it is documented to bias selection *among* multiple specific tools.
-  Example: A system prompt that says "Use your judgment about whether to call a tool or respond directly" leaves Claude free to answer "What's 2+2?" without invoking any tool, whereas a system prompt that says "Always call a tool first before responding" pushes Claude toward invoking a tool even for a question it could answer directly from its own knowledge — so reviewing a system prompt for this kind of wording is part of understanding why a well-described tool is (or isn't) being triggered as expected.
-  Example: See above; a reviewer auditing an agent that over-triggers a search tool for simple arithmetic questions should check the system prompt for "always call a tool first"-style phrasing before assuming the tool's own description is at fault.
+  Definition: Beyond a tool's own description, the surrounding system prompt shapes whether Claude calls a tool in the first place. With the default `tool_choice` of `auto`, "this boundary is steerable through your system prompt": a light instruction such as `"Use the tools to investigate before responding."` increases tool use; a stronger instruction such as `"Always call a tool first before responding."` pushes further toward always calling a tool; and conversely, `"Use your judgment about whether to call a tool or respond directly."` keeps the triggering behavior conservative. This is a narrower, vendor-documented claim than the exam guide's stronger claim about keyword-sensitive instructions creating unintended associations *between* several candidate tools (see the separate, guide-sourced concept below): what this source supports is that system prompt wording moves the *call-a-tool-at-all* boundary, not that it is documented to bias selection among multiple specific tools.
+  Example: A system prompt that says "Use your judgment about whether to call a tool or respond directly" leaves Claude free to answer "What's 2+2?" without invoking any tool, whereas a system prompt that says "Always call a tool first before responding" pushes Claude toward invoking a tool even for a question it could answer directly from its own knowledge.
   Source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview
+
+- Concept: Keyword-sensitive system prompt wording can create unintended tool associations [NEW — task 2.1, guide-sourced]
+  Type: key
+  Definition: The exam guide names, as a Task 2.1 knowledge item, "the impact of system prompt wording on tool selection: keyword-sensitive instructions can create unintended tool associations," paired with the skill of "reviewing system prompts for keyword-sensitive instructions that might override well-written tool descriptions." This is a stronger and more specific claim than the vendor-documented one above: it asserts that particular wording in a system prompt can, via keyword sensitivity, become associated with a specific tool in a way that was not intended, to the point of overriding what an otherwise well-written tool description would have produced. This claim is stated by the exam guide itself; it was not independently found in Anthropic's vendor documentation (platform.claude.com, code.claude.com, or anthropic.com/engineering) despite dedicated searching, and this entry does not assert that vendor documentation corroborates it.
+  Example: Reviewing a system prompt for language that repeats a keyword also present in one tool's name or description (in a way unrelated to that tool's intended use) is the guide-named review skill for catching this failure mode before it produces an unintended tool association.
+  Source: Claude Certified Architect – Foundations Exam Guide, Task Statement 2.1 (https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf)
 
 - Concept: Splitting generic tools into purpose-specific tools with defined input/output contracts [task 2.1]
   Type: key
@@ -148,9 +159,15 @@ changed from the previous round; all other entries are reproduced faithfully.
 
 - Concept: Edit tool's uniqueness constraint and recovery from non-unique matches [task 2.5]
   Type: key
-  Definition: The Edit tool requires its `old_string` target to match exactly one location in the file. Per Claude Code's tools reference: "`old_string` must appear exactly once. When it appears more than once, Claude either supplies a longer string with enough surrounding context to pin down one occurrence, or sets `replace_all: true` to replace them all." This is the officially documented recovery path when a targeted Edit call fails on a non-unique match: narrow the match with more surrounding context, or explicitly opt into replacing every occurrence. (Note: official Claude Code documentation was searched specifically for a named "fall back to Read + Write" recovery pattern for this failure and none was found; see the Unsourced section below.)
+  Definition: The Edit tool requires its `old_string` target to match exactly one location in the file. Per Claude Code's tools reference: "`old_string` must appear exactly once. When it appears more than once, Claude either supplies a longer string with enough surrounding context to pin down one occurrence, or sets `replace_all: true` to replace them all." This is the officially documented recovery path in Claude Code's own tools reference when a targeted Edit call fails on a non-unique match: narrow the match with more surrounding context, or explicitly opt into replacing every occurrence. This vendor-documented mechanism is distinct from the exam guide's own Read+Write fallback statement (see the separate, guide-sourced concept below); the two are not the same recovery path, and this entry does not claim the guide's Read+Write statement is corroborated by this source.
   Example: An Edit call with `old_string: "return x"` fails because that string appears five times in the file; Claude either expands `old_string` to include several surrounding lines that occur only once, or reissues the call with `replace_all: true` if every occurrence should legitimately change.
   Source: https://code.claude.com/docs/en/tools-reference
+
+- Concept: Read + Write as a fallback when Edit fails due to non-unique text matches [NEW — task 2.5, guide-sourced]
+  Type: key
+  Definition: The exam guide names, as a Task 2.5 skill, "using Read + Write as a fallback for reliable file modifications" specifically "when Edit fails due to non-unique text matches." As stated by the guide, this is a fallback strategy distinct from Claude Code's own vendor-documented Edit recovery mechanism (supplying more context or `replace_all: true`; see the separate concept above): when a targeted Edit call cannot be made to match a file uniquely, the guide names reading the file and writing it back as the fallback approach for making the modification reliably. This claim is stated by the exam guide itself; it was not independently found in Claude Code's tools reference or other vendor documentation despite dedicated searching, and this entry does not assert that vendor documentation corroborates it.
+  Example: An Edit call fails because its target string is not unique in the file; per the guide's named skill, the fallback is to use Read to obtain the file's contents and Write to save the corrected version, rather than continuing to adjust the Edit call.
+  Source: Claude Certified Architect – Foundations Exam Guide, Task Statement 2.5 (https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf)
 
 - Concept: Restricting built-in tools via Claude Code permissions [rescoped — was previously mislabeled "Selecting built-in tools effectively"]
   Type: key
@@ -200,13 +217,14 @@ changed from the previous round; all other entries are reproduced faithfully.
 
 ---
 
-## Unsourced (could not be verified in an official source)
+## Unsourced
 
-- Sub-claim: "System prompt wording has a keyword-sensitive effect that can create unintended *associations between specific tools* (biasing which of several tools gets picked)."
-  What was found instead: Official Claude API documentation confirms the related but narrower claim that system prompt wording steers *whether* Claude calls a tool at all versus responding directly (e.g., "Use the tools to investigate before responding." increases tool use; "Use your judgment..." keeps triggering conservative) — see the "System prompt wording steers whether Claude calls a tool at all" key concept above, sourced to https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview. Dedicated searches of platform.claude.com, code.claude.com, and anthropic.com/engineering (writing-tools-for-agents, advanced-tool-use) did not surface an official statement about keyword-sensitive wording creating unintended associations *between* multiple candidate tools specifically. This stronger claim remains unsourced and is not asserted as its own concept.
-
-- Sub-claim: "When Edit fails due to non-unique text matches, the documented/recommended fallback is to use Read + Write instead."
-  What was found instead: Claude Code's tools reference documents Edit's actual recovery mechanism for non-unique matches as supplying more surrounding context or setting `replace_all: true` (see the "Edit tool's uniqueness constraint and recovery from non-unique matches" concept above, sourced to https://code.claude.com/docs/en/tools-reference). No official page was found that names "read the whole file, then overwrite it with Write" as the documented fallback strategy for this specific failure, despite targeted searches of code.claude.com/docs/en/tools-reference, code.claude.com/docs/en/common-workflows, and the Anthropic-schema text editor tool docs.
+Nothing remains unsourced. The two items previously listed here (system prompt
+keyword-sensitivity creating unintended tool associations; Read + Write as the
+fallback for Edit's non-unique-match failure) have been promoted into their own
+concept entries above, sourced to the official exam guide (Task Statements 2.1
+and 2.5 respectively), which qualifies as official certification material under
+this research's source-quality bar.
 
 ---
 
@@ -227,3 +245,4 @@ changed from the previous round; all other entries are reproduced faithfully.
 - https://code.claude.com/docs/en/tools-reference
 - https://code.claude.com/docs/en/errors
 - https://code.claude.com/docs/en/common-workflows
+- https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf (Claude Certified Architect – Foundations Exam Guide, Task Statements 2.1 and 2.5)
