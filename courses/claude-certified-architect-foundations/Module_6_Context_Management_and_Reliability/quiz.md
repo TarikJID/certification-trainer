@@ -109,10 +109,14 @@ question.
    review actions?
 3. What numeric thresholds trigger human escalation in Claude Code's
    auto-mode design, and what happens short of reaching them?
-4. According to the exam guide, name the three appropriate escalation
+4. What is "case/ticket triage and routing," in general terms, and why is
+   it logically prior to the question of when a case should escalate to a
+   human?
+5. According to the exam guide, name the three appropriate escalation
    triggers for a human handoff.
-5. What two things does the exam guide name as unreliable proxies for
-   actual case complexity?
+6. What two things does the exam guide name as unreliable proxies for
+   actual case complexity, and what should the system do instead when a
+   case is simply ambiguous?
 
 ### Answers
 1. No — an error that ends a subagent early is never delivered as that
@@ -123,9 +127,16 @@ question.
 3. 3 consecutive denials or 20 total denials in a session; short of that, a
    denied action is returned to the agent with an instruction to find a
    safer path.
-4. Customer requests for a human, policy exceptions/gaps, and inability to
+4. The general support-operations concept of a case or ticket being
+   classified and routed to a handler (automated or human) based on its
+   characteristics. It's logically prior because a case must already be
+   classified/routed somewhere before a decision about escalating that
+   routing to a human specifically can even be asked.
+5. Customer requests for a human, policy exceptions/gaps, and inability to
    make meaningful progress.
-5. Sentiment-based escalation and self-reported confidence scores.
+6. Sentiment-based escalation and self-reported confidence scores; for an
+   ambiguous case, the system should request additional identifiers from
+   the user rather than guessing from a heuristic.
 
 ---
 
@@ -135,11 +146,17 @@ question.
 2. Why is "confidence calibration" flagged as not a single named,
    first-party Anthropic framework, even though it's a real, sourced
    concept in this course?
-3. What is "stratified random sampling" designed to catch that
+3. What is "statistical sampling basics" (populations, strata, sample
+   validity), and why does "stratified random sampling" as a QA technique
+   not make sense without it?
+4. What is "stratified random sampling" designed to catch that
    spot-checking only low-confidence outputs would miss?
-4. What does the Citations API guarantee that asking the model to quote its
+5. What is "retrieval / document-grounding basics," and how is it more
+   basic than Module 5's grounding techniques (e.g. extracting quotes to
+   reduce hallucination)?
+6. What does the Citations API guarantee that asking the model to quote its
    own sources in prose does not?
-5. In multi-document synthesis, where should documents be placed relative
+7. In multi-document synthesis, where should documents be placed relative
    to the query, and why does this matter given Lesson 6.1?
 
 ### Answers
@@ -150,12 +167,27 @@ question.
 2. Because it's composed from two separately documented mechanisms
    (prompted uncertainty expression, and denial-count-based escalation)
    rather than described by Anthropic as one unified, named methodology.
-3. A new, systematic error affecting outputs the model itself rated as
+3. The general statistical concept of drawing a sample from a population,
+   and specifically of dividing the population into strata (subgroups,
+   e.g. by confidence band) and sampling from each stratum rather than the
+   population as one undifferentiated group. Stratified random sampling as
+   a QA technique is just this general concept applied with "confidence
+   band" as the stratifying variable — it doesn't make sense without first
+   understanding what a stratum is and why sampling by stratum differs from
+   plain random sampling.
+4. A new, systematic error affecting outputs the model itself rated as
    high-confidence — since a review process that only checks low-confidence
    outputs would never sample those.
-4. That citations are guaranteed valid pointers into the supplied documents
+5. It's the general practice of supplying external source documents in the
+   prompt/context so answers can be grounded in and traced back to
+   specific text. It's more basic than Module 5's quote-extraction
+   technique because that technique is a specific method built on top of
+   already having source documents in context — you have to be supplying
+   documents at all before you can ask the model to extract quotes from
+   them.
+6. That citations are guaranteed valid pointers into the supplied documents
    — the model quoting itself in prose carries no such guarantee.
-5. Above the instructions/query (near the top of the prompt); this matters
+7. Above the instructions/query (near the top of the prompt); this matters
    because it's consistent with the "lost in the middle"/beginning-and-end
    recall pattern from Lesson 6.1 — content at the very end (the query) and
    the very beginning (the documents) is more reliably processed.

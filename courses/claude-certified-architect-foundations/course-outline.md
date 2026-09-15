@@ -176,11 +176,23 @@ basics and drawing on subagent/permission-mode material from Modules 2 and
 - Lesson 6.5: Ambiguity, Confidence, and Provenance
 
 Domain traceability: all 30 concepts from the Context Management &
-Reliability research file (several of its prerequisite entries — Tokens,
+Reliability research file. Eight of its prerequisite entries — Tokens,
 Messages API turn structure, Tool use loop, Extended thinking, Beta
 headers, Agentic loop, Prompt engineering fundamentals, Permission/approval
 model, Subagent/orchestrator-worker basics — were taught in Modules 1, 2,
-4, or 5 and are referenced here rather than re-taught).
+4, or 5 and are referenced here rather than re-taught. The remaining three
+prerequisite entries are taught directly in this module, immediately before
+the guide-sourced concept each one supports:
+- "Case/ticket triage and routing basics" — taught in Lesson 6.4,
+  immediately before "Escalation triggers and anti-patterns for human
+  handoff," which it is the precondition for.
+- "Statistical sampling basics (populations, strata, sample validity)" —
+  taught in Lesson 6.5, immediately before "Stratified random sampling and
+  field-level confidence scores," which it is the precondition for.
+- "Retrieval / document-grounding basics" — taught in Lesson 6.5,
+  immediately before "Citations for information provenance" (and before
+  "Long-context document structuring," later in the same lesson), both of
+  which it is the precondition for.
 
 **Sourcing flags (exam-guide-only, no vendor corroboration found for the
 specific named claim):**
@@ -189,10 +201,16 @@ specific named claim):**
   (a related but differently-framed needle-in-a-haystack measurement and a
   document-placement recommendation) is cited alongside it and clearly
   distinguished as not a verbatim match.
+- "Case/ticket triage and routing basics" (Lesson 6.4) — general
+  support-operations grounding relayed alongside Task 5.2; no vendor
+  documentation covering it was found.
 - "Escalation triggers and anti-patterns for human handoff" (Lesson 6.4,
   Task 5.2) — business-process criteria and named anti-patterns
   (sentiment-based escalation, self-reported confidence scores) with no
   vendor documentation found.
+- "Statistical sampling basics" (Lesson 6.5) — general statistical
+  grounding relayed alongside Task 5.5; no vendor documentation covering
+  it was found.
 - "Stratified random sampling and field-level confidence scores for
   validating extractions" (Lesson 6.5, Task 5.5) — QA methodology with no
   vendor documentation found.
@@ -201,6 +219,10 @@ specific named claim):**
   different name ("structured note-taking"/"agentic memory" rather than
   "scratchpad files"); both names and both sources are given so the
   learner can recognize either framing on the exam.
+
+"Retrieval / document-grounding basics" (Lesson 6.5) is the one prerequisite
+of the three newly added that is fully vendor-sourced (not exam-guide-only)
+— it carries no sourcing flag.
 
 **Caveated, not flagged as unverified:** "Confidence expression and
 calibration in human-review workflows" (Lesson 6.5) is fully sourced to
@@ -218,7 +240,14 @@ None. All 115 concepts from the five domain research files are covered in
 this course, either taught in full at their earliest point of need or
 explicitly cross-referenced to that teaching point where the same concept
 was independently documented in more than one domain file (see the "Domain
-traceability" notes above for each module).
+traceability" notes above for each module). This includes all 30 concepts
+in the Context Management & Reliability research file: an earlier version
+of this course omitted three of its prerequisite entries ("Case/ticket
+triage and routing basics," "Statistical sampling basics," and "Retrieval /
+document-grounding basics"); this revision teaches all three directly in
+Module 6, Lessons 6.4 and 6.5, immediately ahead of the guide-sourced
+concepts they support — see the Module 6 traceability notes above for exact
+placement.
 
 ## Summary of sourcing transparency carried into the course
 - **Vendor-documented concepts** (the large majority): sourced directly to
@@ -229,9 +258,10 @@ traceability" notes above for each module).
   distinguished from vendor documentation in every lesson where they
   appear): Module 2 Lesson 2.4 (single message vs. sequential iteration);
   Module 3 Lessons 3.1 and 3.5 (keyword-sensitive tool associations; Read+Write
-  Edit fallback); Module 6 Lessons 6.1, 6.3, 6.4, 6.5 ("lost in the
-  middle"; scratchpad files/structured note-taking; escalation
-  triggers/anti-patterns; stratified sampling/field-level confidence).
+  Edit fallback); Module 6 Lessons 6.1, 6.3, 6.4 (x2), 6.5 (x2) ("lost in the
+  middle"; scratchpad files/structured note-taking; case/ticket triage and
+  routing basics; escalation triggers/anti-patterns; statistical sampling
+  basics; stratified sampling/field-level confidence).
 - **Explicitly flagged as unverified** (not presented as established fact):
   the "be conservative"/"only report high-confidence findings" comparative
   precision claim in Module 5 Lesson 5.2.

@@ -346,6 +346,29 @@ deciding.
 **Source:** Context Management & Reliability research — Escalation patterns
 and human review workflows (key), https://code.claude.com/docs/en/permission-modes ; https://www.anthropic.com/engineering/claude-code-auto-mode
 
+### Concept: Case/ticket triage and routing basics
+> **Sourcing note:** sourced solely to the official CCAR-F Exam Guide
+> (relayed alongside Domain 5, Task 5.2); no vendor documentation covering
+> this general support-operations concept was found. This is the general
+> grounding the next concept builds on, not a specific Claude capability in
+> its own right.
+
+Before considering which specific signals should or should not drive an
+automated-to-human handoff decision, it helps to name the more basic
+concept that decision sits inside: a case or ticket being classified and
+routed to a handler (automated or human) based on its characteristics. This
+is the general support-operations notion of triage and routing — logically
+prior to any question of what should trigger escalation specifically (next
+concept), since a case must already be classified/routed somewhere before a
+decision about escalating that routing to a human can be made at all.
+
+**Example:** An incoming support ticket is first classified by category
+(billing, technical, account access) before any decision is made about
+whether it can be resolved automatically or needs a human agent.
+
+**Source:** Claude Certified Architect – Foundations Exam Guide, Domain 5,
+Task 5.2 (exam-guide-only; not found in vendor documentation).
+
 ### Concept: Escalation triggers and anti-patterns for human handoff
 > **Sourcing note:** sourced solely to the official CCAR-F Exam Guide
 > (Domain 5, Task 5.2); no vendor documentation covering these specific
@@ -356,7 +379,10 @@ The exam guide specifies criteria for when a system built on Claude should
 hand a case off to a human — a business-logic/process-design concept about
 *what should trigger* a handoff and *why naive proxies fail*, distinct from
 the tool-permission escalation mechanics above (which cover *how* Claude
-Code decides to pause an autonomous coding action). Appropriate escalation
+Code decides to pause an autonomous coding action). This concept builds
+directly on the triage/routing basics above: once a case is already being
+classified and routed, these are the criteria that decide when *that*
+routing should escalate to a human specifically. Appropriate escalation
 triggers: "customer requests for a human, policy exceptions/gaps, and
 inability to make meaningful progress." Two named anti-patterns to avoid:
 "sentiment-based escalation and self-reported confidence scores are
@@ -438,6 +464,30 @@ reviewer instead of fabricating a number.
 **Source:** Context Management & Reliability research — Confidence
 expression and calibration (key), https://claude.com/blog/best-practices-for-prompt-engineering ; https://www.anthropic.com/engineering/claude-code-auto-mode
 
+### Concept: Statistical sampling basics (populations, strata, sample validity)
+> **Sourcing note:** sourced solely to the official CCAR-F Exam Guide
+> (relayed alongside Domain 5, Task 5.5); no vendor documentation covering
+> this general statistical concept was found. This is general statistical
+> grounding, not a Claude-specific capability, needed before the next
+> concept makes sense.
+
+The general statistical concept of drawing a subset ("sample") from a
+larger set ("population") to estimate properties of the whole, and
+specifically of dividing the population into subgroups ("strata," e.g. by
+confidence band or category) and sampling from each stratum, rather than
+sampling the population as a single undifferentiated group. This is the
+grounding needed before "stratified random sampling" as a QA technique
+(next concept — sampling across confidence bands specifically to catch
+errors hidden in high-confidence outputs) makes sense.
+
+**Example:** Instead of randomly sampling 100 invoices from a batch of
+10,000 without regard to category, a QA process samples 25 invoices from
+each of four categories (very high, high, medium, low confidence) so that
+each category gets checked, not just the ones that look risky.
+
+**Source:** Claude Certified Architect – Foundations Exam Guide, Domain 5,
+Task 5.5 (exam-guide-only; not found in vendor documentation).
+
 ### Concept: Stratified random sampling and field-level confidence scores for validating extractions
 > **Sourcing note:** sourced solely to the official CCAR-F Exam Guide
 > (Domain 5, Task 5.5); no vendor documentation on this specific QA
@@ -447,9 +497,10 @@ The exam guide names a specific quality-assurance methodology for human
 review workflows, distinct from the prompted-uncertainty and
 denial-count mechanisms above: "stratified random sampling for measuring
 error rates in high-confidence extractions and detecting novel error
-patterns" — deliberately sampling across strata (e.g., by confidence band or
-field type) rather than only reviewing low-confidence outputs, specifically
-so a new failure mode affecting outputs rated high-confidence can still be
+patterns" — applying the general stratified-sampling concept above by
+deliberately sampling across strata (e.g., by confidence band or field
+type) rather than only reviewing low-confidence outputs, specifically so a
+new failure mode affecting outputs rated high-confidence can still be
 caught. Paired with "field-level confidence scores calibrated using labeled
 validation sets" — assigning a confidence score per extracted field (not
 just per document/response), calibrated (checked and adjusted) against a
@@ -467,6 +518,24 @@ recalibrated against these labeled checks.
 
 **Source:** Claude Certified Architect – Foundations Exam Guide, Domain 5,
 Task 5.5 (exam-guide-only; not found in vendor documentation).
+
+### Concept: Retrieval / document-grounding basics
+The general practice of supplying external source documents in the prompt
+or context — rather than relying purely on the model's trained-in
+knowledge — so answers can be grounded in, and traced back to, specific
+text. This is the precondition for both of the next two concepts (Citations
+and long-context document structuring), both of which exist specifically to
+make that grounding verifiable; it is a more basic prerequisite than Module
+5's grounding techniques (extracting quotes to reduce hallucination), which
+is a specific technique built on top of this more general practice of
+supplying source documents in the first place.
+
+**Example:** A support agent is given the actual product manual as a
+document in context rather than being asked to answer from general
+knowledge, so its answers can be checked against the manual.
+
+**Source:** Context Management & Reliability research — Retrieval /
+document-grounding basics (prerequisite), https://platform.claude.com/docs/en/build-with-claude/citations
 
 ### Concept: Citations for information provenance
 The Citations API feature lets a caller attach source documents (plain
