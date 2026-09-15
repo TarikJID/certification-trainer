@@ -288,10 +288,21 @@ processing, and multi-instance review architectures.
 - Concept: Being clear and direct
   Type: prerequisite
   Definition: The foundational prompting principle that precise, explicit, unambiguous
-  instructions produce better results than vague or implicit ones. It underlies more
-  advanced techniques such as multishot prompting, chain-of-thought prompting, and XML
-  tag structuring — all of which are ways of making instructions, examples, and context
+  instructions produce better results than vague or implicit ones. Anthropic frames this
+  as treating Claude "like a brilliant but new employee who lacks context on your norms
+  and workflows": give contextual information, state exactly what you want (including
+  what the output should and should not contain), and provide instructions as sequential
+  numbered or bulleted steps. The documented "golden rule" is to show the prompt to a
+  colleague with minimal context on the task and have them try to follow it — if a human
+  reader is confused, Claude will likely be too. This principle underlies more advanced
+  techniques such as multishot prompting, chain-of-thought prompting, and XML tag
+  structuring, all of which are ways of making instructions, examples, and context
   clearer and easier for Claude to disambiguate.
+  Example: A vague prompt like "Write something about our new app" is rewritten as "Write
+  a 150-word marketing email for busy professionals announcing our new productivity app.
+  Output only the email body — no subject line, no preamble, no explanation," giving
+  Claude an explicit audience, length, and output boundary instead of leaving them
+  implicit.
   Source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices
 
 - Concept: JSON Schema fundamentals
@@ -308,11 +319,17 @@ processing, and multi-instance review architectures.
 
 - Concept: Tool use (function calling)
   Type: prerequisite
-  Definition: (See the key-concept definition above.) A working understanding of how
-  Claude calls tools — receiving a `tool_use` block and returning a `tool_result` — is
-  the immediate prerequisite for strict tool use, forcing tool use via `tool_choice`, and
-  validation/retry handling of tool calls, since all of those refine or react to the
-  basic tool-use round trip.
+  Definition: A working understanding of how Claude calls tools — receiving a `tool_use`
+  block naming a tool and its input, and the application returning a `tool_result` block
+  — is the immediate prerequisite for strict tool use, forcing tool use via `tool_choice`,
+  and validation/retry handling of tool calls, since all of those refine or react to the
+  basic tool-use round trip described in the tool use overview.
+  Example: A `get_weather` tool is registered with an `input_schema` requiring a
+  `location` string; when a user asks about the weather, Claude's response carries a
+  `tool_use` block such as `{"name": "get_weather", "input": {"location": "San
+  Francisco, CA"}}`, which the calling application must recognize and execute before the
+  conversation can continue — the exact round trip that strict tool use, forced
+  `tool_choice`, and error handling all build on.
   Source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview
 
 - Concept: Basic agentic workflow building blocks (prompt chaining, routing, parallelization)
@@ -333,11 +350,16 @@ processing, and multi-instance review architectures.
 
 - Concept: Success criteria and evaluations
   Type: prerequisite
-  Definition: (See the key-concept definition above.) Having a measurable definition of
-  what a "good" output looks like is the immediate prerequisite for both grounding
-  techniques that reduce false positives/hallucinations and for designing a
-  multi-instance review or voting architecture, since a voting/evaluator system needs a
-  concrete criterion to evaluate against.
+  Definition: Having a measurable, SMART definition of what a "good" output looks like,
+  and an automatable way to test outputs against it, is the immediate prerequisite for
+  both grounding techniques that reduce false positives/hallucinations and for designing
+  a multi-instance review or voting architecture, since a voting/evaluator system needs a
+  concrete criterion to evaluate each instance's output against.
+  Example: Before building a three-instance voting pipeline to flag policy-violating
+  content, a team first defines the measurable target the voting system is meant to hit —
+  e.g., "flag at least 99% of true violations while keeping false flags under 1%" — so
+  that the voting threshold (how many of three instances must agree) can be tuned against
+  that explicit criterion instead of chosen arbitrarily.
   Source: https://platform.claude.com/docs/en/test-and-evaluate/develop-tests
 
 ---
