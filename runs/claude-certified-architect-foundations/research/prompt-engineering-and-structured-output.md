@@ -106,6 +106,40 @@ processing, and multi-instance review architectures.
   answers across different user questions.
   Source: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/increase-consistency
 
+- Concept: Designing explicit, categorical review criteria to reduce false positives
+  Type: key
+  Definition: When Claude is used to flag, classify, or review items (e.g., code changes,
+  content, or compliance issues), precision depends on giving it specific, categorical
+  decision criteria rather than vague or purely confidence-based instructions. Anthropic's
+  own Code Review product illustrates this directly: its default reviewer prompt does not
+  rely only on an unqualified instruction to "be careful" — it enumerates the exact
+  conditions under which a finding may be flagged (for example, the code will fail to
+  compile or parse, will definitely produce wrong results regardless of input, or clearly
+  violates a rule from `CLAUDE.md` that can be quoted exactly) alongside an explicit "do
+  not flag" list (style/quality concerns, issues that depend on unconfirmed inputs or
+  state, subjective suggestions, pre-existing issues, pedantic nitpicks, and anything a
+  linter already catches). The prompt states the reason directly: "False positives erode
+  trust and waste reviewer time." The same discipline extends to severity: rather than
+  leaving terms like "important" undefined, Code Review ships default severity tiers
+  (Important / Nit / Pre-existing) and its `REVIEW.md` customization mechanism instructs
+  teams to "state explicitly which classes of finding are Important and which are Nit at
+  most" for their own repository, illustrated with concrete per-severity code-pattern
+  examples (e.g., unscoped database queries, PII in logs, and non-backward-compatible
+  migrations as Important; generated files and intentionally rule-violating test code as
+  never-flag). Teams can additionally require a "verification bar" — evidence such as a
+  `file:line` citation supporting a claim about behavior before a finding is posted — and
+  use "skip rules" to exclude specific paths or entire finding categories from review, a
+  targeted way to suppress a category that has proven noisy rather than adjusting one
+  global confidence threshold.
+  Example: A repository's `REVIEW.md` tightens precision by replacing an implicit "flag
+  anything that looks wrong" default with explicit, checkable rules: "Important" is
+  redefined to cover only concrete patterns like unscoped database queries and PII in
+  logs; a verification-bar rule requires that any claim about a function's behavior cite
+  the specific `file:line` where that behavior is implemented before it can be posted; and
+  a skip rule excludes the `src/gen/` directory and `*.lock` files entirely — concrete
+  conditions that a generic instruction to "be more careful" could not have specified.
+  Source: https://code.claude.com/docs/en/code-review and https://github.com/anthropics/claude-code/blob/main/plugins/code-review/commands/code-review.md
+
 - Concept: Reducing hallucinations and false positives via grounding
   Type: key
   Definition: Techniques to reduce factually incorrect or unsupported output and
@@ -295,9 +329,10 @@ processing, and multi-instance review architectures.
   numbered or bulleted steps. The documented "golden rule" is to show the prompt to a
   colleague with minimal context on the task and have them try to follow it — if a human
   reader is confused, Claude will likely be too. This principle underlies more advanced
-  techniques such as multishot prompting, chain-of-thought prompting, and XML tag
-  structuring, all of which are ways of making instructions, examples, and context
-  clearer and easier for Claude to disambiguate.
+  techniques such as multishot prompting, chain-of-thought prompting, XML tag
+  structuring, and designing explicit categorical review criteria, all of which are ways
+  of making instructions, examples, and context clearer and easier for Claude to
+  disambiguate.
   Example: A vague prompt like "Write something about our new app" is rewritten as "Write
   a 150-word marketing email for busy professionals announcing our new productivity app.
   Output only the email body — no subject line, no preamble, no explanation," giving
@@ -372,6 +407,8 @@ processing, and multi-instance review architectures.
 - https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/use-xml-tags
 - https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices
 - https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/increase-consistency
+- https://code.claude.com/docs/en/code-review
+- https://github.com/anthropics/claude-code/blob/main/plugins/code-review/commands/code-review.md
 - https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations
 - https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview
 - https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools
@@ -388,4 +425,21 @@ processing, and multi-instance review architectures.
 The official exam guide PDF at the provided S3 URL could not be parsed by the fetch
 tool (binary/FlateDecode-encoded content); research was scoped from the domain
 description provided by the orchestrator plus the official Claude API documentation
-listed above. No concept below was left unsourced.
+listed above.
+
+## Note on one unverifiable sub-claim
+
+Domain 4's task statement on explicit criteria (per the coordinator's report of the exam
+guide) also names the specific comparative claim that generic instructions such as "be
+conservative" or "only report high-confidence findings" do *not* improve precision
+relative to specific categorical criteria. I searched for this exact comparative claim in
+Anthropic's official documentation (docs.claude.com/platform.claude.com, code.claude.com,
+anthropic.com/engineering, and the anthropics GitHub org) and could not find it stated
+there; the phrasing appears verbatim only on a third-party certification-prep aggregator
+site, which fails this research's source-quality bar and is not cited. The concept above
+is instead built entirely from Anthropic's own Code Review documentation and its public
+review-prompt source, which independently demonstrate the same underlying principle
+(specific, checkable criteria plus a stated reason — "false positives erode trust" —
+rather than an unqualified confidence instruction), so the concept is not left unsourced,
+but I am flagging this one specific comparative sub-claim as not independently verified
+against an authoritative source, rather than presenting it as confirmed.
