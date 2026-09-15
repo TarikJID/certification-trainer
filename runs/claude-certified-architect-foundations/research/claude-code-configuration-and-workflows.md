@@ -88,6 +88,12 @@ Description: Focuses on configuring CLAUDE.md file hierarchies, creating custom 
   Example: A developer sends the prompt "I want to build a real-time notification system. Interview me in detail using the AskUserQuestion tool. Ask about technical implementation, UI/UX, edge cases, concerns, and tradeoffs... Keep interviewing until we've covered everything, then write a complete spec to SPEC.md." Claude asks about delivery mechanism (websockets vs. polling), read/unread state, retry behavior, and rate limits — considerations the developer hadn't specified — before producing SPEC.md, and only then does a fresh session begin implementation from that spec.
   Source: https://code.claude.com/docs/en/best-practices
 
+- Concept: Concrete input/output examples as verification criteria
+  Type: key
+  Definition: One specific way the documentation recommends giving Claude a checkable signal for its own work is to replace a prose description of desired behavior with concrete input/output examples. A purely prose instruction ("implement a function that validates email addresses") leaves what counts as correct open to interpretation; restating the same request with explicit example cases ("example test cases: user@example.com is true, invalid is false, user@.com is false. run the tests after implementing") turns it into an unambiguous, checkable specification that Claude can run against directly, rather than one it can only judge as "looks done." The documentation presents this as one row of a general "before/after" pattern for making verification criteria concrete, alongside providing a screenshot to diff a UI change against and pasting the exact error text for a failing build.
+  Example: Before: "implement a function that validates email addresses." After: "write a validateEmail function. example test cases: user@example.com is true, invalid is false, user@.com is false. run the tests after implementing." The second version gives Claude concrete cases it can encode as a test and run, rather than an open-ended notion of "valid."
+  Source: https://code.claude.com/docs/en/best-practices
+
 - Concept: Headless mode / Agent SDK CLI (`claude -p`)
   Type: prerequisite
   Definition: Adding the `-p` (or `--print`) flag to any `claude` command runs it non-interactively: Claude Code takes a prompt, runs it to completion without a live conversation, prints the result, and exits, making it a scriptable tool usable in bash pipelines, git hooks, cron jobs, and CI systems. Output can be requested as plain `text` (default), structured `json` (includes `result`, `session_id`, cost metadata, and can be validated against a `--json-schema`), or `stream-json` (newline-delimited events for real-time streaming). Non-interactive runs can auto-approve tools with `--allowedTools`, set a baseline via `--permission-mode`, and suppress prompts entirely for unattended jobs with `--permission-prompts none`. The `--bare` flag skips auto-discovery of hooks, skills, custom commands, subagents, plugins, MCP servers, auto memory, and CLAUDE.md for faster, more deterministic startup — recommended for CI and scripted/SDK calls.
@@ -100,6 +106,12 @@ Description: Focuses on configuring CLAUDE.md file hierarchies, creating custom 
   Example: A workflow triggers on `pull_request` events and runs `anthropics/claude-code-action@v1` with `prompt: "/code-review:code-review --comment ..."`, so every opened or updated pull request automatically gets an inline code review comment from Claude, without a human needing to type `@claude`.
   Source: https://code.claude.com/docs/en/github-actions
 
+- Concept: Session context isolation in code review
+  Type: key
+  Definition: The same Claude Code session that generated a piece of code is less effective at reviewing it than an independent review instance, because the implementing session's context contains the reasoning, assumptions, and decisions that produced the change — it is not evaluating the diff from a neutral standpoint but confirming work it already committed to. The documentation's recommended fix is to run the review in a fresh subagent that receives only the diff and the review criteria, not the implementing conversation's history: "A reviewer running in a fresh subagent context sees only the diff and the criteria you give it, not the reasoning that produced the change, so it evaluates the result on its own terms." This is why CI/CD review integrations (e.g. a code-review skill run by Claude Code GitHub Actions) are structured as a separate subagent invocation over the diff, rather than asking the same session that wrote the code to also grade it.
+  Example: After Claude implements a rate limiter, instead of asking the same session "is this correct?", the developer runs "Use a subagent to review the rate limiter diff against PLAN.md. Check that every requirement is implemented, the listed edge cases have tests, and nothing outside the task's scope changed. Report gaps, not style preferences" — the reviewing subagent sees only the diff and PLAN.md, not the original implementation session's reasoning, so it isn't biased toward confirming the change is fine.
+  Source: https://code.claude.com/docs/en/best-practices
+
 ---
 
 Sources cited:
@@ -110,3 +122,5 @@ Sources cited:
 - https://code.claude.com/docs/en/best-practices
 - https://code.claude.com/docs/en/headless
 - https://code.claude.com/docs/en/github-actions
+
+Unsourced item (reported, not included in the concept list above): Task Statement 3.5's pattern of "providing all issues in a single message when they interact, versus fixing them sequentially when they are independent" could not be located, after extensive search, in any official code.claude.com or anthropic.com page (checked in full: best-practices, common-workflows, memory, debug-your-config, workflows, commands, and a partial pass over prompt-library, plus general web search). No entry for it has been added to this file to avoid presenting an unsourced definition as sourced.
