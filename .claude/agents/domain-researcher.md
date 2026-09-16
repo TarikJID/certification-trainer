@@ -5,6 +5,7 @@ description: Research one knowledge domain of a certification in depth — its k
   parallel instances, one per domain handed out by the orchestrator.
 model: sonnet
 tools:
+  - Read
   - WebSearch
   - WebFetch
   - Write
