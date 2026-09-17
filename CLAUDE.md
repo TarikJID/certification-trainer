@@ -23,8 +23,9 @@ Do not proceed until that agreement is explicit.
    number, and the verdict path to write to.
 3. On REWORK: route the evaluator's verdict file path back to `domain-mapper`.
    On PASS: continue.
-4. Spawn one `domain-researcher` instance per domain, assigning exactly one domain
-   to each. Run them in parallel.
+4. Spawn one `domain-researcher` instance per domain. Give each one its domain name,
+   description, **its task statements verbatim from the domain map**, and the path to
+   the archived exam guide. Run them in parallel.
 5. Send each researcher's output path to `evaluator` (with the researcher checklist,
    that output's cited sources as the source of truth, the round number, and the
    verdict path).
@@ -32,8 +33,8 @@ Do not proceed until that agreement is explicit.
    Hold the outputs that already passed — never re-run a researcher whose work was
    green-lit.
 7. When, and only when, every researcher's output has passed, spawn
-   `course-builder` and give it the `domain-mapper` output plus all researcher
-   outputs.
+   `course-builder` and give it the `domain-mapper` output (which carries the task
+   statements) plus all researcher outputs.
 8. Send `course-builder`'s output to `evaluator`.
 9. On REWORK: route the verdict file path back to `course-builder`.
 10. On PASS: tell the user the course is ready, and where it was written.

@@ -19,7 +19,7 @@ is a gap to report, not a gap to fill.
 ## Input you receive
 
 - The **domain map** (from domain-mapper) — the big-picture view of what the exam
-  covers.
+  covers, including every domain's task statements verbatim.
 - The **per-domain research** (from the domain-researcher instances) — concepts,
   definitions, examples, sources, and any concepts flagged as unsourced.
 
@@ -67,12 +67,19 @@ before the learner has attempted the question.
 
 ## Done when
 
+- **Every task statement in the domain map is taught somewhere in the course**, and
+  `course-outline.md` says where. This is the coverage check: the exam guide is the
+  only external yardstick in the pipeline, so a statement with no lesson behind it is
+  a hole in the course, not a judgement call.
 - Every concept in the provided research appears somewhere in the course, or is
   explicitly listed in `course-outline.md` as deliberately excluded, with a reason.
 - Every lesson has concept explanations with examples, and a quiz.
 - Every module has a hands-on exercise.
 - The sequence satisfies the prerequisite rule: no concept is taught before its
   prerequisites.
-- Any unsourced concept carried into the course is marked as unverified.
-- `course-outline.md` maps every module back to the domain(s) it came from, so
-  coverage against the domain map can be checked.
+- Any concept marked `Status: UNSOURCED` in the research is carried into the course
+  and marked as unverified in the lesson the learner actually reads — never quietly
+  dropped, never presented as sourced.
+- `course-outline.md` maps every module back to the domain(s) it came from, and
+  carries a table mapping **each task statement → the lesson that teaches it**, so
+  coverage can be checked by reading rather than by trusting.
