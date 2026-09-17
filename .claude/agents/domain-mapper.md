@@ -28,10 +28,22 @@ domain the exam covers and return them as a structured list.
 4. Save the official source material itself into the run folder, alongside your
    output — the PDF, or its extracted text if the PDF cannot be stored directly.
    A later stage must be able to re-read the original without re-fetching it.
-5. Reproduce the guide's **task statements** (the numbered "the candidate can ..."
-   items under each domain) verbatim. These are the exam's own statement of what
-   is tested, and they are the only external yardstick the pipeline has. Copy
-   them; do not condense, merge, or rewrite them.
+5. Reproduce the guide's **task statements** verbatim, together with everything
+   listed beneath each one. These are the exam's own account of what it tests, and
+   they are the only external yardstick the pipeline has. Copy them; do not condense,
+   merge, or rewrite them.
+
+   Guides label and phrase these differently. Look for a numbered objectives section
+   near the end, whatever it is called. In the CCAR-F guide, for instance, the items
+   are labelled `Task Statement N.M:` followed by an imperative phrase — "Design and
+   implement agentic loops for autonomous task execution" — and each carries two
+   bullet blocks, `Knowledge of:` and `Skills in:`. Other guides use "Objective",
+   "Competency", or bare numbering. Match the structure, not the label.
+
+   **Capture the bullets, not just the statement line.** The statement names the task;
+   the bullets enumerate what is actually tested, and they are what downstream
+   coverage is measured against. A statement line alone is a summary, and this
+   checklist does not accept summaries.
 6. If no official page can be found or accessed, say so explicitly. Never invent
    domains for a certification you couldn't verify — that's a guess, not a mapping.
 
@@ -44,8 +56,18 @@ Return exactly this structure, one entry per domain:
   Description: <1-2 sentence description of what it covers>
   Task statements:
     - <id>: <exact wording from the guide>
+      Knowledge of:
+        - <bullet, verbatim>
+        - <bullet, verbatim>
+      Skills in:
+        - <bullet, verbatim>
     - <id>: <exact wording from the guide>
+      ...
 ```
+
+Use whatever sub-headings the guide itself uses. If it lists bullets under a task
+statement without naming the groups, list them under a single `Measured:` heading.
+If a statement genuinely has no sub-content, say so rather than leaving it ambiguous.
 
 Precede the domain list with a `## Sources` section naming every URL fetched and
 the path where you archived the source material, and a `## Notes on sourcing`
@@ -60,11 +82,15 @@ which exam the material describes.
   under `## Sources`.
 - Every task statement in the guide is reproduced **verbatim and complete** —
   every statement, exact wording, grouped under its domain. A summary, paraphrase,
-  or representative subset does not satisfy this. If the guide genuinely contains
-  no task statements, say so under `## Notes on sourcing`, naming the sections you
-  checked and quoting how the guide does structure its domains instead. The
-  evaluator verifies this claim against the archived source, so an unsupported
-  "not applicable" is a rework, not an exit.
+  or representative subset does not satisfy this.
+- **Every bullet beneath every task statement is reproduced verbatim too.** These are
+  the coverage target for the whole pipeline; dropping them makes coverage
+  unmeasurable. Report the count you captured, per domain and in total, so the figure
+  can be checked against the guide.
+- If the guide genuinely contains no task statements, say so under `## Notes on
+  sourcing`, naming the sections you checked and quoting how the guide does structure
+  its domains instead. The evaluator verifies this claim against the archived source,
+  so an unsupported "not applicable" is a rework, not an exit.
 - If the source was prose rather than an explicit list, the domains extracted from
   it are still returned in the structured format above — not left as a paraphrase
   of the prose.

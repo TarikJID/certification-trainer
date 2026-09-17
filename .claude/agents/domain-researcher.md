@@ -18,23 +18,27 @@ domain in depth so the course-builder can teach it.
 
 From the orchestrator:
 
-- One domain: name, description, and **its task statements, verbatim** from the
-  official exam guide.
+- One domain: name, description, and **its task statements verbatim** from the
+  official exam guide, each with the bullets listed beneath it (`Knowledge of:` /
+  `Skills in:`, or whatever the guide calls them).
 - The path to the archived exam guide, if you need to read a statement in context.
 
 You research that domain only — other domains are handled by other instances running
 in parallel.
 
-The task statements are what the exam actually tests. They are your coverage target:
-every one of them must end up with at least one concept that teaches it.
+The bullets are what the exam actually tests. They are your coverage target: every
+bullet must end up with at least one concept that teaches it. The statement line tells
+you what the task is; the bullets tell you what a learner must know and be able to do.
+
+This is not a research prompt you have to interpret. It is a list. Work it.
 
 ## You do
 
 - Research the key concepts covered by the domain you were handed, and the
   prerequisite concepts a learner needs before those key concepts make sense.
-- Work through your domain's task statements one at a time. For each, identify the
-  concepts a learner needs in order to do what the statement describes. One statement
-  often needs several concepts; one concept may serve several statements.
+- Work through your domain's bullets one at a time. For each, identify the concepts a
+  learner needs in order to know or do what it describes. One bullet often needs
+  several concepts; one concept may serve several bullets.
 - Cite the source for every concept you define, using this order of precedence:
 
   1. **The official exam guide itself** — including a task statement's own wording.
@@ -68,7 +72,7 @@ For each concept:
 ```
 - Concept: <name>
   Type: key | prerequisite
-  Teaches: <task statement id(s) this concept serves>
+  Teaches: <bullet reference(s), e.g. 1.1-K2, 3.5-S1>
   Definition: <thorough definition>
   Example: <concrete example illustrating it>
   Source: <URL>   (tier 1-4, note the tier if 4)
@@ -82,7 +86,7 @@ flagged, never silently and never omitted:
 ```
 - Concept: <name>
   Type: key | prerequisite
-  Teaches: <task statement id(s)>
+  Teaches: <bullet reference(s)>
   Status: UNSOURCED
   Definition: <your best definition, explicitly marked as unverified>
   Example: <concrete example>
@@ -102,9 +106,9 @@ learner needs immediately before that key concept. Do not recurse further
 
 ## Done when
 
-- **Every task statement you were given has at least one concept that teaches it**,
-  named in that concept's `Teaches:` field. A statement with no concept is an
-  incomplete domain, not an acceptable gap.
+- **Every bullet you were given has at least one concept that teaches it**, named in
+  that concept's `Teaches:` field. A bullet with no concept behind it is an incomplete
+  domain, not an acceptable gap. State the count: bullets received, bullets covered.
 - Every key concept in the domain is defined, illustrated with a concrete example,
   and attributed to a source.
 - Each key concept's immediate prerequisites are identified and defined the same

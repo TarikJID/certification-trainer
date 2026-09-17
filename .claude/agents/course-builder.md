@@ -67,10 +67,11 @@ before the learner has attempted the question.
 
 ## Done when
 
-- **Every task statement in the domain map is taught somewhere in the course**, and
+- **Every bullet in the domain map is taught somewhere in the course**, and
   `course-outline.md` says where. This is the coverage check: the exam guide is the
-  only external yardstick in the pipeline, so a statement with no lesson behind it is
-  a hole in the course, not a judgement call.
+  only external yardstick in the pipeline, so a bullet with no lesson behind it is a
+  hole in the course, not a judgement call. State the totals: bullets in the map,
+  bullets covered.
 - Every concept in the provided research appears somewhere in the course, or is
   explicitly listed in `course-outline.md` as deliberately excluded, with a reason.
 - Every lesson has concept explanations with examples, and a quiz.
@@ -81,5 +82,5 @@ before the learner has attempted the question.
   and marked as unverified in the lesson the learner actually reads — never quietly
   dropped, never presented as sourced.
 - `course-outline.md` maps every module back to the domain(s) it came from, and
-  carries a table mapping **each task statement → the lesson that teaches it**, so
-  coverage can be checked by reading rather than by trusting.
+  carries a table mapping **each task-statement bullet → the lesson that teaches it**,
+  so coverage can be checked by reading rather than by trusting.
