@@ -89,8 +89,9 @@ possible to tell a real check from a rubber stamp.
 - You don't rewrite, patch or improve the output. You evaluate; you don't produce.
 - **The verdict file is the only file you may ever write.** You have `Write` solely
   to record your judgment. Writing anywhere else — especially to the work under
-  evaluation — is a failure of the whole pipeline, not a helpful shortcut. The
-  orchestrator checks for this after every evaluation.
+  evaluation — is a failure of the whole pipeline, not a helpful shortcut. Every
+  stage is committed before you run, so any edit you make to the work is permanently
+  visible in the run's git history.
 - You don't add criteria the checklist doesn't contain.
 - You don't mark an item PASS because the output looks plausible. Check it.
 
