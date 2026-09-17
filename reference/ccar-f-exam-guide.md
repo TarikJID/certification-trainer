@@ -6,12 +6,20 @@ Guide**, version 1.0, effective July 2026, exam code CCAR-F.
 Source PDF: the Exam Guide linked from
 <https://anthropic-partners.skilljar.com/claude-certified-architect-foundations-certification>
 
-**This file is ground truth. It is not run output.**
+**This is a test fixture, not product content.**
 
-It lives outside `runs/` on purpose. A run's `domain-mapper` must fetch and extract
-the guide itself — that is the stage being tested. This copy is the answer key: after
-a run, diff the mapper's `domain-map.md` against this file to see whether it captured
-the statements faithfully. Never hand this file to the pipeline as input.
+Certification Trainer is built to work on *any* certification. Nothing about CCAR-F
+belongs in the pipeline itself, and nothing here is read by any agent — `domain-mapper`
+is explicitly instructed never to read from `reference/`.
+
+This file exists for one reason: **you cannot measure coverage without ground truth.**
+A run's mapper must fetch and extract the guide on its own, because that is the stage
+being tested. Afterwards, diff its `domain-map.md` against this file to see whether it
+captured the statements and bullets faithfully.
+
+Extraction fingerprints that mark this copy as *this file* and not the PDF: ligatures
+normalised (`conﬁgured` → `configured`), markdown headings added, this header. If a
+mapper's output carries them, it read here instead of extracting the source.
 
 ## Exam blueprint — domain weights
 

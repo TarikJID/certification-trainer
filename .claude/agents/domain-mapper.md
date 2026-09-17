@@ -33,12 +33,22 @@ domain the exam covers and return them as a structured list.
    they are the only external yardstick the pipeline has. Copy them; do not condense,
    merge, or rewrite them.
 
-   Guides label and phrase these differently. Look for a numbered objectives section
-   near the end, whatever it is called. In the CCAR-F guide, for instance, the items
-   are labelled `Task Statement N.M:` followed by an imperative phrase — "Design and
-   implement agentic loops for autonomous task execution" — and each carries two
-   bullet blocks, `Knowledge of:` and `Skills in:`. Other guides use "Objective",
-   "Competency", or bare numbering. Match the structure, not the label.
+   **Match the structure, never a label.** Every guide words this differently. Look
+   for a section, usually late in the document, that enumerates per domain what the
+   exam tests. The shape to recognise is:
+
+   - a numbered item naming a task or objective, then
+   - one or more lists beneath it detailing what is known or done.
+
+   Labels vary: "Task Statement", "Objective", "Competency", "Learning outcome", or
+   bare numbering. The lists beneath may be headed "Knowledge of" / "Skills in",
+   "Candidates should be able to", or nothing at all. Phrasing varies too — some
+   guides use imperatives ("Design and implement..."), others "the candidate can...".
+
+   > *Illustration only, from one certification (CCAR-F) — do not treat this as the
+   > expected format.* There, items read `Task Statement 1.1: Design and implement
+   > agentic loops for autonomous task execution`, each followed by a `Knowledge of:`
+   > block and a `Skills in:` block. Another guide will look nothing like this.
 
    **Capture the bullets, not just the statement line.** The statement names the task;
    the bullets enumerate what is actually tested, and they are what downstream
@@ -46,6 +56,12 @@ domain the exam covers and return them as a structured list.
    checklist does not accept summaries.
 6. If no official page can be found or accessed, say so explicitly. Never invent
    domains for a certification you couldn't verify — that's a guess, not a mapping.
+
+**Never read from `reference/`.** Anything there is a human-maintained answer key kept
+for grading runs after the fact, and it may exist for the very certification you are
+mapping. Extracting from it instead of from the source you fetched would make your
+output a copy of the answer rather than a mapping, and the failure would be invisible.
+Your material comes from what you fetch, and from the source you archive.
 
 ## Output format
 
