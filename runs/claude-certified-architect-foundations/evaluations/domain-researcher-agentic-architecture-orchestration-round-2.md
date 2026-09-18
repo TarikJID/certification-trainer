@@ -1,0 +1,36 @@
+# Evaluation — domain-researcher (Domain 1: Agentic Architecture & Orchestration) — round 2
+
+- Output evaluated: `runs/claude-certified-architect-foundations/research/agentic-architecture-orchestration.md`
+- Checklist: domain-researcher's "Done when" checklist
+- Source of truth used: the sources cited in the output itself. For this round, fetched/read directly:
+  - https://modelcontextprotocol.io/specification/2025-06-18/server/tools (new primary source for the "MCP tool results and the `isError` pattern" prerequisite concept)
+  - `runs/claude-certified-architect-foundations/sources/exam-guide.txt`, lines 140-170 (Task Statement 1.1 bullets, used to verify the tightened "Agentic Loop Lifecycle" Source line) and lines 965-984 (Appendix, used to verify the "isError flag" secondary corroboration)
+  - Round 1's verdict file: `runs/claude-certified-architect-foundations/evaluations/domain-researcher-agentic-architecture-orchestration-round-1.md`
+  - The dispatch slice: `runs/claude-certified-architect-foundations/dispatch/agentic-architecture-orchestration.md` (re-traced bullet IDs and header counts)
+- Repeat round: **yes** (round 1 returned REWORK)
+- Verdict: **PASS**
+
+## Checklist results
+
+| # | Checklist item | Result | Evidence or issue |
+|---|----------------|--------|-------------------|
+| 1 | Every bullet given has at least one concept that teaches it; state bullets received/covered | PASS | Header states "Bullets received: 48 ... Bullets covered: 48 (48/48)", unchanged from round 1. Re-checked the Coverage summary table (6+8+8+6+6+6+8=48) against the dispatch slice's task-statement bullet counts (6,8,8,6,6,6,8) — matches. File structure and `Teaches:` fields for all concepts are otherwise unchanged from the round-1-evaluated version, which already independently traced all 48 bullet IDs against `Teaches:` fields and confirmed full coverage, including the cross-referenced `1.3-K4` taught by "Session Forking for Divergent Exploration" (a 1.7 concept). No regression. |
+| 2 | Every stated count matches the file | PASS | Header claims "34 concepts (30 key, 4 prerequisite)". Recounted: 4 prerequisite concepts; key concepts 4 (1.1) + 6 (1.2) + 6 (1.3) + 4 (1.4) + 2 (1.5) + 4 (1.6) + 4 (1.7) = 30. Total 34. Matches exactly. No regression from round 1. |
+| 3 | Every key concept defined, illustrated with a concrete example, attributed to a source | PASS | The round-1 "soft concern" on "The Agentic Loop Lifecycle" concept is resolved: its Source line now reads "runs/.../exam-guide.txt, lines 148-149 (Task Statement 1.1 Knowledge bullet, verbatim: 'inspecting stop_reason (\"tool_use\" vs \"end_turn\")')" as the primary citation. Verified against exam-guide.txt lines 147-149 directly: the bullet reads "The agentic loop lifecycle: sending requests to Claude, inspecting stop_reason (\"tool_use\" vs \"end_turn\"), executing requested tools, and returning results for the next iteration" — the quoted fragment matches verbatim. The secondary corroboration to the `agent-loop` SDK doc is now explicitly and accurately scoped: it states that doc's own `stop_reason` discussion covers only the final turn's value set, distinct from the per-turn `tool_use`/`end_turn` branching being cited — this is an honest, accurate caveat rather than an overclaim. All other 29 key concepts are unchanged from the round-1-evaluated version, which already confirmed `Definition:`, `Example:`, and `Source:` fields present and spot-verified several against live sources. No regression. |
+| 4 | Each key concept's immediate prerequisites identified and defined the same way | PASS | The round-1 FAIL is resolved. The "MCP tool results and the `isError` pattern" prerequisite concept now cites https://modelcontextprotocol.io/specification/2025-06-18/server/tools as its primary source. Fetched that page directly: it defines exactly the claimed mechanic — "Tools use two error reporting mechanisms: 1. Protocol Errors... 2. Tool Execution Errors: Reported in tool results with `isError: true`" — matching the concept's definition of protocol-level JSON-RPC errors vs. tool-result-embedded `isError`. The page also defines `outputSchema` as an "Optional JSON Schema defining expected output structure" declared per-tool, matching the concept's claim about per-tool schema freedom. The concept's claim that the spec "places no requirement that different tools... represent the same kind of real-world data the same way" is a fair negative inference from the page (the spec discusses `outputSchema` only as a per-tool, per-server construct with no cross-tool consistency requirement stated anywhere on the page) rather than a fabricated claim. The exam guide's Appendix line 976 ("isError flag") is now correctly framed as secondary corroboration only, not sole support — verified present at that exact line. The other 3 prerequisite concepts are unchanged from round 1 and were already confirmed to have `Definition:`, `Example:`, and `Source:`. No regression. |
+| 5 | Every cited source meets the quality bar (authoritative/official) | PASS | The newly added source, modelcontextprotocol.io (the Model Context Protocol specification), is explicitly named as official in the researcher's brief ("the Model Context Protocol specification count as official"). All other cited domains (code.claude.com/docs, platform.claude.com/docs, anthropic.com/research, anthropic.com/engineering, the archived exam guide) are unchanged from round 1 and remain official. No forum/social/blog citations found. |
+| 6 | No concept cites non-official where official exists; non-official citations justified | PASS | No non-official sources are cited anywhere in the file. Unchanged from round 1. |
+| 7 | Any unsourced concept carries `Status: UNSOURCED` + `Searched:` record | PASS | No concept is marked `UNSOURCED`. Given item 4 is now resolved (the `isError` concept has a genuine, verified official source), this item is satisfied — the concept did not need the escape hatch because it now has a real source. |
+
+## Persisting issues
+
+None. Both issues raised in round 1 are resolved:
+- The "MCP tool results and the `isError` pattern" mis-attribution (round 1, item 4: FAIL) — resolved by re-sourcing to the MCP specification, verified above.
+- The "Agentic Loop Lifecycle" citation-fidelity soft concern (round 1, item 3 note) — resolved by tightening the Source line to the exam guide as primary with an honestly-scoped secondary corroboration, verified above.
+
+Round-1 items that already passed (bullet coverage, count accuracy, source quality, no non-official citations, no UNSOURCED gaps) remain passing with no regression.
+
+## Not checked
+
+- Did not re-fetch every live source URL cited across all 34 concepts a second time in this round; relied on round 1's spot-check confirmation for concepts/citations that are textually unchanged between the two versions, and independently re-verified only the two concepts round 1 flagged plus the header/coverage counts.
+- Did not independently verify every other exam-guide line range cited elsewhere in the file beyond lines 148-149 and 976 (the two directly implicated by this round's fixes); round 1 already spot-checked a representative sample of exam-guide citations and found them accurate.
