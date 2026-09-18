@@ -20,7 +20,10 @@ From the orchestrator:
 
 - One domain: name, description, and **its task statements verbatim** from the
   official exam guide, each with the bullets listed beneath it (`Knowledge of:` /
-  `Skills in:`, or whatever the guide calls them).
+  `Skills in:`, or whatever the guide calls them). **Every bullet arrives with an ID
+  already assigned by `domain-mapper`** — cite those IDs exactly as given. Never
+  invent, renumber or reformat them; they are what makes coverage checkable across
+  stages.
 - The path to the archived exam guide, if you need to read a statement in context.
 
 You research that domain only — other domains are handled by other instances running
@@ -39,18 +42,25 @@ This is not a research prompt you have to interpret. It is a list. Work it.
 - Work through your domain's bullets one at a time. For each, identify the concepts a
   learner needs in order to know or do what it describes. One bullet often needs
   several concepts; one concept may serve several bullets.
-- Cite the source for every concept you define, using this order of precedence:
+- Cite the source for every concept you define. There are exactly **two** kinds of
+  source, and they are not ranked against each other:
 
-  1. **The official exam guide itself** — including a task statement's own wording.
-     It is official certification material and is a valid source on its own, with no
-     corroboration required.
-  2. **Official product or vendor documentation** — the vendor's own docs site.
-  3. **Standards bodies and primary specifications.**
-  4. **Reputable secondary sources** — only when tiers 1–3 have nothing, and only
-     when named explicitly with the tier recorded alongside the citation.
+  **Official.** All of these are equally acceptable, and any one of them is
+  sufficient on its own:
+  - The exam guide itself, including a task statement's or bullet's own wording.
+  - The vendor's product documentation, docs site, cookbooks and engineering
+    write-ups.
+  - Standards bodies and primary specifications.
 
-  Prefer the highest tier available. Never treat a lower tier as disqualifying when
-  no higher tier exists.
+  **Non-official.** Everything else. Acceptable **only** where nothing official
+  covers the concept, and then the citation must name the source and say in one line
+  why no official source exists for it.
+
+  Choose whichever official source explains the concept best. There is no ordering to
+  respect: the exam guide does not outrank the product documentation, and product
+  documentation does not outrank the guide. They answer different questions — the
+  guide says what is *tested*, the documentation says what is *true* — and a good
+  definition often needs both.
 
 ## You don't
 
@@ -72,16 +82,17 @@ For each concept:
 ```
 - Concept: <name>
   Type: key | prerequisite
-  Teaches: <bullet reference(s), e.g. 1.1-K2, 3.5-S1>
+  Teaches: <bullet ID(s) exactly as they appear in the domain map, e.g. 1.1-K2, 3.5-S1>
   Definition: <thorough definition>
   Example: <concrete example illustrating it>
-  Source: <URL>   (tier 1-4, note the tier if 4)
+  Source: <URL or path>   (add "non-official: <why nothing official covers this>"
+                           only where the source is not official)
 ```
 
 ### The terminal rule — when nothing can be sourced
 
-If, after genuine search, a concept has no source at any tier, still include it —
-flagged, never silently and never omitted:
+If, after genuine search, a concept has no source at all — official or otherwise —
+still include it, flagged, never silently and never omitted:
 
 ```
 - Concept: <name>
@@ -97,8 +108,11 @@ flagged, never silently and never omitted:
 re-runs one of your queries, and a source surfacing on the first page means the claim
 was false. Listing the search honestly is less work than fabricating a convincing one.
 
-Use this sparingly. More than two UNSOURCED concepts in one domain is itself a
-signal that something is wrong with the search, not with the sources.
+Use this sparingly. More than two UNSOURCED concepts in one domain is itself a signal
+that something is wrong with the search, not with the sources.
+
+Do not use it for a concept you *did* source. A non-official citation is a source; it
+belongs in the `Source:` line with its one-line justification, not here.
 
 Prerequisites are traced one level back from each key concept — the concepts a
 learner needs immediately before that key concept. Do not recurse further
@@ -109,14 +123,21 @@ learner needs immediately before that key concept. Do not recurse further
 - **Every bullet you were given has at least one concept that teaches it**, named in
   that concept's `Teaches:` field. A bullet with no concept behind it is an incomplete
   domain, not an acceptable gap. State the count: bullets received, bullets covered.
+- **Every count you state matches the file.** Before you finish, count the concepts in
+  your own output and check the figure against what your header claims. A header
+  saying 46 concepts over a file containing 44 is a defect in its own right: it is the
+  one number a reader trusts without re-counting.
 - Every key concept in the domain is defined, illustrated with a concrete example,
   and attributed to a source.
 - Each key concept's immediate prerequisites are identified and defined the same
   way.
 - Every cited source meets the quality bar above (authoritative/official — no
   forums, social, or blogs).
-- Every source is recorded with its precedence tier, and no higher tier was
-  available where a lower one was used.
+- No concept cites a non-official source where an official one exists, and every
+  non-official citation names the source and says why nothing official covers it.
+  **Official sources are not ranked**, so a concept sourced to the exam guide rather
+  than the product documentation, or the reverse, is not a defect — do not send work
+  back over which official source was chosen.
 - Any concept that could not be sourced carries `Status: UNSOURCED` **and** a
   `Searched:` record of the pages opened and queries run. No concept is omitted for
   want of a source.

@@ -71,19 +71,40 @@ Return exactly this structure, one entry per domain:
 - Domain: <short name> (<weighting, if the guide gives one>)
   Description: <1-2 sentence description of what it covers>
   Task statements:
-    - <id>: <exact wording from the guide>
+    - <statement id>: <exact wording from the guide>
       Knowledge of:
-        - <bullet, verbatim>
-        - <bullet, verbatim>
+        - <statement id>-K1: <bullet, verbatim>
+        - <statement id>-K2: <bullet, verbatim>
       Skills in:
-        - <bullet, verbatim>
-    - <id>: <exact wording from the guide>
+        - <statement id>-S1: <bullet, verbatim>
+    - <statement id>: <exact wording from the guide>
       ...
 ```
 
 Use whatever sub-headings the guide itself uses. If it lists bullets under a task
-statement without naming the groups, list them under a single `Measured:` heading.
-If a statement genuinely has no sub-content, say so rather than leaving it ambiguous.
+statement without naming the groups, list them under a single `Measured:` heading and
+number them `-M1`, `-M2`, and so on. If a statement genuinely has no sub-content, say
+so rather than leaving it ambiguous.
+
+### Bullet IDs are yours to assign
+
+**Every bullet gets an ID, and you are the only stage that assigns them.** The guide
+does not number its bullets, but downstream agents cite bullets by ID to prove
+coverage. If the IDs are not in the map, every later stage invents its own and the
+references stop lining up.
+
+The convention:
+
+- `<statement id>-K<n>` — the *n*th bullet under a knowledge heading.
+- `<statement id>-S<n>` — the *n*th bullet under a skills heading.
+- `<statement id>-M<n>` — where the guide groups bullets under no heading.
+
+Numbering is positional within each list and starts at 1. The second bullet under task
+statement 3.4's skills heading is `3.4-S2`. No renumbering across headings, no global
+sequence, no gaps.
+
+State the convention in a `## Bullet ID convention` section of your output, so someone
+holding only the map can read a reference like `3.4-S2` without guessing.
 
 Precede the domain list with a `## Sources` section naming every URL fetched and
 the path where you archived the source material, and a `## Notes on sourcing`
@@ -103,6 +124,8 @@ which exam the material describes.
   the coverage target for the whole pipeline; dropping them makes coverage
   unmeasurable. Report the count you captured, per domain and in total, so the figure
   can be checked against the guide.
+- **Every bullet carries an ID** per the convention above — positional, starting at 1
+  within each list, no gaps — and the convention is stated in the output.
 - If the guide genuinely contains no task statements, say so under `## Notes on
   sourcing`, naming the sections you checked and quoting how the guide does structure
   its domains instead. The evaluator verifies this claim against the archived source,

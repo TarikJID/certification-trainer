@@ -82,5 +82,6 @@ before the learner has attempted the question.
   and marked as unverified in the lesson the learner actually reads — never quietly
   dropped, never presented as sourced.
 - `course-outline.md` maps every module back to the domain(s) it came from, and
-  carries a table mapping **each task-statement bullet → the lesson that teaches it**,
-  so coverage can be checked by reading rather than by trusting.
+  carries a table mapping **each task-statement bullet ID → the lesson that teaches
+  it**, using the IDs exactly as `domain-mapper` assigned them, so coverage can be
+  checked by reading rather than by trusting.

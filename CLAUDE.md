@@ -23,21 +23,32 @@ Do not proceed until that agreement is explicit.
    number, and the verdict path to write to.
 3. On REWORK: route the evaluator's verdict file path back to `domain-mapper`.
    On PASS: continue.
-4. Spawn one `domain-researcher` instance per domain. Give each one its domain name,
-   description, **its task statements verbatim from the domain map**, and the path to
-   the archived exam guide. Run them in parallel.
-5. Send each researcher's output path to `evaluator` (with the researcher checklist,
+4. Slice each domain's section verbatim out of the domain map into its own file under
+   `runs/<certification-name>/dispatch/<domain-slug>.md`, and commit them. These are
+   the inputs the verdict files will cite, so they belong in the repo — a slice left
+   in a scratchpad vanishes with the container and leaves the audit trail pointing at
+   nothing.
+5. Spawn one `domain-researcher` instance per domain. Give each one its domain name,
+   description, the **path to its slice**, and the path to the archived exam guide.
+   Run them in parallel. The slice already carries the task statements, the bullets
+   and their IDs — do not restate or renumber them in the dispatch.
+6. Before dispatching the evaluator, check each researcher's self-reported counts
+   against its own file — concepts claimed vs concepts present. A mismatch is the
+   researcher's defect to fix, not yours: flag it to the evaluator rather than
+   correcting the file. You never edit an agent's output.
+7. Send each researcher's output path to `evaluator` (with the researcher checklist,
    that output's cited sources as the source of truth, the round number, and the
    verdict path).
-6. On REWORK: route the verdict file path back to **that specific researcher only**.
+8. On REWORK: route the verdict file path back to **that specific researcher only**.
    Hold the outputs that already passed — never re-run a researcher whose work was
-   green-lit.
-7. When, and only when, every researcher's output has passed, spawn
-   `course-builder` and give it the `domain-mapper` output (which carries the task
-   statements) plus all researcher outputs.
-8. Send `course-builder`'s output to `evaluator`.
-9. On REWORK: route the verdict file path back to `course-builder`.
-10. On PASS: tell the user the course is ready, and where it was written.
+   green-lit. Where possible, route it back to that researcher's own resumed context
+   so it revises its work rather than regenerating it.
+9. When, and only when, every researcher's output has passed, spawn `course-builder`
+   and give it the `domain-mapper` output (which carries the task statements, the
+   bullets and their IDs) plus all researcher outputs.
+10. Send `course-builder`'s output to `evaluator`.
+11. On REWORK: route the verdict file path back to `course-builder`.
+12. On PASS: tell the user the course is ready, and where it was written.
 
 ## Commit before every evaluation
 
@@ -76,6 +87,7 @@ between stages rather than pasting full content through your own context. Your
 context holds the control flow and the pass/fail state — not the corpus.
 
 - Intermediate artifacts (domain map, per-domain research) → `runs/<certification-name>/`
+- Per-domain dispatch slices → `runs/<certification-name>/dispatch/<domain-slug>.md`
 - Evaluation verdicts → `runs/<certification-name>/evaluations/`
   Filename: `<agent>-<unit-of-work>-round-<n>.md`. The agent name always appears;
   the unit is the domain slug for researchers, and is omitted for the mapper and
