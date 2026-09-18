@@ -2,11 +2,14 @@
 
 Bullets received: 53 (Task 5.1: 10, Task 5.2: 9, Task 5.3: 8, Task 5.4: 9, Task 5.5: 8, Task 5.6: 9)
 Bullets covered: 53
-Key concepts: 35
+Key concepts: 33
 Prerequisite concepts: 11
+Total concepts: 44
 UNSOURCED concepts: 0
 
-Exam guide domain-5 citations reference `runs/claude-certified-architect-foundations/source-exam-guide.txt`, lines 675–813 ("Domain 5: Context Management & Reliability"), which is Tier 1 official certification material valid as a standalone source per the research brief. Where vendor/standards documentation independently corroborates or extends a bullet's content, both sources are cited.
+Precedence used throughout: Tier 1 = the archived exam guide itself (valid standalone, no corroboration required). Tier 2 = official Anthropic/Claude product documentation and engineering content (platform.claude.com/docs, code.claude.com/docs, platform.claude.com/cookbook, anthropic.com/engineering). Tier 3 = standards bodies/primary specifications (e.g., NIST). Tier 4 = named reputable secondary sources, used only when tiers 1-3 have nothing (none were needed in this domain).
+
+Exam guide domain-5 citations reference `runs/claude-certified-architect-foundations/source-exam-guide.txt`, lines 675–813 ("Domain 5: Context Management & Reliability"), which is Tier 1 official certification material valid as a standalone source per the research brief. Where vendor/standards documentation independently corroborates or extends a bullet's content, both sources are cited, each at its correct tier.
 
 ---
 
@@ -26,7 +29,7 @@ Exam guide domain-5 citations reference `runs/claude-certified-architect-foundat
   Teaches: 5.1-K2
   Definition: Language models process information placed at the very beginning and very end of a long input more reliably than information placed in the middle. When critical findings, facts, or figures are buried in the middle of a long aggregated context (e.g., page 40 of 80 concatenated tool outputs), the model is measurably more likely to omit or misstate them, even though the information was technically present in context.
   Example: A customer support agent reviewing a long transcript with the customer's refund amount stated in the middle of the conversation may quote the wrong figure, while amounts stated at the very start or the most recent message are recalled accurately.
-  Source: runs/claude-certified-architect-foundations/source-exam-guide.txt (Domain 5, Task 5.1-K2), tier 1; corroborated by https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices, "Long context prompting" section ("Queries at the end can improve response quality by up to 30 percent in tests, especially with complex, multidocument inputs"), tier 1
+  Source: runs/claude-certified-architect-foundations/source-exam-guide.txt (Domain 5, Task 5.1-K2), tier 1; corroborated by https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices, "Long context prompting" section ("Queries at the end can improve response quality by up to 30 percent in tests, especially with complex, multidocument inputs"), tier 2
 
 - Concept: Progressive summarization risk
   Type: key
@@ -40,14 +43,14 @@ Exam guide domain-5 citations reference `runs/claude-certified-architect-foundat
   Teaches: 5.1-K3, 5.1-S3
   Definition: Every tool call's raw result is appended to the conversation, and results (a full order record, an API response, a file read) frequently contain far more fields than are relevant to the task at hand. Left unmanaged, this accumulates tokens at a rate disproportionate to their usefulness — Anthropic gives the example that a tool has been called deep in message history, so there is little reason for the agent to keep re-reading its full raw result. The mitigation is to trim tool outputs to only the fields relevant to the current task before they persist in context, and/or to mechanically clear stale, re-fetchable tool results once they are no longer needed.
   Example: An order-lookup tool returns 40+ fields (shipping carrier, warehouse ID, promotional codes, internal SKUs); for a return request, only order number, item, purchase date, amount, and return-eligibility status are kept in the persisted context, with the rest discarded before the next turn.
-  Source: https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents ("once a tool has been called deep in the message history, why would the agent need to see the raw result again?... one of the safest lightest touch forms of compaction"), tier 2; mechanism detailed in https://platform.claude.com/cookbook/tool-use-context-engineering-context-engineering-tools (`clear_tool_uses_20250919` context-management edit), tier 1
+  Source: https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents ("once a tool has been called deep in the message history, why would the agent need to see the raw result again?... one of the safest lightest touch forms of compaction"), tier 2; mechanism detailed in https://platform.claude.com/cookbook/tool-use-context-engineering-context-engineering-tools (`clear_tool_uses_20250919` context-management edit), tier 2
 
 - Concept: Complete conversation history for API coherence
   Type: key
   Teaches: 5.1-K4
   Definition: The Claude Messages API is stateless between requests — each call must include the full message history the model should be aware of, including prior `assistant` turns, `tool_use` blocks, and their matching `tool_result` blocks, in the exact order they occurred. Tool-result blocks must immediately follow their corresponding tool-use blocks; omitting messages or reordering them breaks the model's ability to maintain conversational coherence and can trigger explicit API validation errors.
   Example: An application drops an earlier `assistant` message containing a `tool_use` block while trying to save tokens; the next request now has an orphaned `tool_result` with no matching `tool_use`, and the API returns a 400 error rather than silently proceeding.
-  Source: runs/claude-certified-architect-foundations/source-exam-guide.txt (Domain 5, Task 5.1-K4), tier 1; corroborated by https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls ("Tool result blocks must immediately follow their corresponding tool use blocks in the message history"), tier 1
+  Source: runs/claude-certified-architect-foundations/source-exam-guide.txt (Domain 5, Task 5.1-K4), tier 1; corroborated by https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls ("Tool result blocks must immediately follow their corresponding tool use blocks in the message history"), tier 2
 
 - Concept: Persistent "case facts" / structured issue-data layer
   Type: key
@@ -61,7 +64,7 @@ Exam guide domain-5 citations reference `runs/claude-certified-architect-foundat
   Teaches: 5.1-S4
   Definition: To counteract the lost-in-the-middle effect, key findings summaries are placed at the very beginning of an aggregated input (not buried after the raw detail), and the detailed supporting material that follows is broken into clearly labeled sections (e.g., XML tags or headers per source/topic) rather than one undifferentiated block. Anthropic's own long-context guidance additionally recommends placing the query/instructions at the end of the prompt, after the data, since recall of instructions is highest when they immediately precede generation.
   Example: A research synthesis prompt opens with a "Key Findings" section listing the three headline conclusions, followed by `<document index="1"><source>...</source><document_content>...</document_content></document>` blocks for each underlying source, with the actual analysis question placed after all documents.
-  Source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices, "Long context prompting" section ("Put longform data at the top... Structure document content and metadata with XML tags"), tier 1
+  Source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices, "Long context prompting" section ("Put longform data at the top... Structure document content and metadata with XML tags"), tier 2
 
 - Concept: Structured subagent output with provenance metadata
   Type: key
@@ -116,7 +119,7 @@ Exam guide domain-5 citations reference `runs/claude-certified-architect-foundat
   Teaches: 5.2-S1
   Definition: Explicit escalation criteria are made concrete and consistent by adding a small set of worked few-shot examples to the system prompt, each demonstrating a scenario and the correct decision (escalate vs. resolve autonomously) with the reasoning behind it. This lets the model generalize the underlying judgment to novel, unseen scenarios rather than only matching the literal cases given as examples.
   Example: A system prompt includes: "`<example>` Customer: 'I've called three times about this and nothing's fixed.' → Escalate: repeated unresolved contact signals inability to make progress. `</example>`" alongside 2–3 other worked examples covering policy gaps and explicit requests.
-  Source: runs/claude-certified-architect-foundations/source-exam-guide.txt (Domain 5, Task 5.2-S1), tier 1; few-shot technique itself documented in https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices, "Use examples effectively" section, tier 1
+  Source: runs/claude-certified-architect-foundations/source-exam-guide.txt (Domain 5, Task 5.2-S1), tier 1; few-shot technique itself documented in https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices, "Use examples effectively" section, tier 2
 
 ---
 
@@ -129,7 +132,7 @@ Exam guide domain-5 citations reference `runs/claude-certified-architect-foundat
   Teaches: 5.3-K1, 5.3-S1
   Definition: When a subagent or tool call fails, returning a bare, generic status is not enough for a coordinator to make a good recovery decision. Instead, the failure should be reported as structured context: the failure type (e.g., timeout, rate limit, not-found), what was attempted (the query or action), any partial results already obtained, and potential alternative approaches. This gives the coordinator (or the model consuming a tool_result) the information needed to decide whether to retry, try an alternative, work from partial data, or surface the failure to a human.
   Example: Instead of returning `"error": "search unavailable"`, a subagent returns `{"failure_type": "timeout", "attempted": "search vendor DB for SKU-1234", "partial_results": ["found in cache from 2 days ago"], "alternatives": ["retry after 30s", "use cached result with staleness warning"]}`.
-  Source: runs/claude-certified-architect-foundations/source-exam-guide.txt (Domain 5, Task 5.3-K1, 5.3-S1), tier 1; corroborated by tool-error guidance ("Write instructive error messages. Instead of generic errors like 'failed,' include what went wrong and what Claude should try next") in https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls, tier 1
+  Source: runs/claude-certified-architect-foundations/source-exam-guide.txt (Domain 5, Task 5.3-K1, 5.3-S1), tier 1; corroborated by tool-error guidance ("Write instructive error messages. Instead of generic errors like 'failed,' include what went wrong and what Claude should try next") in https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls, tier 2
 
 - Concept: Access failure vs. valid empty result
   Type: key
@@ -170,21 +173,21 @@ Exam guide domain-5 citations reference `runs/claude-certified-architect-foundat
   Teaches: 5.4-K2, 5.4-S2
   Definition: To counteract context degradation over an extended exploration session, agents maintain scratchpad files — plain files on disk recording key findings as they are discovered — and explicitly reference those files for subsequent questions rather than relying purely on what remains salient in the live conversation context. Because the scratchpad persists outside the model's context window, it survives context boundaries (compaction, session restarts, or agent handoffs) that would otherwise cause the finding to be lost or misremembered.
   Example: While tracing a refund flow across a codebase, an agent appends to `findings.md`: "RefundProcessor.calculate() at src/billing/refund.py:142 handles partial refunds; does NOT handle currency conversion — see follow-up needed." A later exploration phase reads this file first instead of re-deriving the same fact.
-  Source: runs/claude-certified-architect-foundations/source-exam-guide.txt (Domain 5, Task 5.4-K2, 5.4-S2), tier 1; corroborated by state-management guidance on unstructured progress notes ("Freeform progress notes work well for tracking general progress and context") in https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices, "State management best practices" section, tier 1
+  Source: runs/claude-certified-architect-foundations/source-exam-guide.txt (Domain 5, Task 5.4-K2, 5.4-S2), tier 1; corroborated by state-management guidance on unstructured progress notes ("Freeform progress notes work well for tracking general progress and context") in https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices, "State management best practices" section, tier 2
 
 - Concept: Subagent delegation for context isolation during exploration
   Type: key
   Teaches: 5.4-K3, 5.4-S1
   Definition: Rather than having the main agent read every file and accumulate all raw exploration output directly into its own context, specific investigation questions ("find all test files," "trace refund flow dependencies") are delegated to subagents, each of which runs in its own isolated context window. The subagent can explore as verbosely as it needs to internally, but only its condensed summary returns to the main conversation, so the main agent's context stays available for high-level coordination rather than being consumed by raw discovery output.
   Example: Claude Code's built-in Explore subagent is dispatched with read-only tools to search a codebase; its full grep/read trail stays inside its own context, and the main session receives only "Found 12 database-related files across /db, /models, /migrations."
-  Source: runs/claude-certified-architect-foundations/source-exam-guide.txt (Domain 5, Task 5.4-K3, 5.4-S1), tier 1; corroborated by "Claude delegates to Explore when it needs to search or understand a codebase without making changes. This keeps exploration results out of your main conversation context" in https://code.claude.com/docs/en/sub-agents, tier 1
+  Source: runs/claude-certified-architect-foundations/source-exam-guide.txt (Domain 5, Task 5.4-K3, 5.4-S1), tier 1; corroborated by "Claude delegates to Explore when it needs to search or understand a codebase without making changes. This keeps exploration results out of your main conversation context" in https://code.claude.com/docs/en/sub-agents, tier 2
 
 - Concept: Structured state export and crash-recovery manifest
   Type: key
   Teaches: 5.4-K4, 5.4-S4
   Definition: For long-running, multi-agent exploration or build workflows that may crash or be interrupted, each agent exports its state (what it found, what it completed, what remains) to a known, structured location on disk. A coordinator that resumes after a crash loads a manifest — an index of what each agent exported and where — and injects the relevant state back into each agent's prompt on restart, so work does not have to be redone from scratch.
   Example: Agent A crashes after indexing 60% of a repository's modules. On restart, the coordinator reads `manifest.json`, sees Agent A's last checkpoint recorded 340 of 560 modules indexed with their file paths, and resumes Agent A from module 341 instead of re-scanning the whole repository.
-  Source: runs/claude-certified-architect-foundations/source-exam-guide.txt (Domain 5, Task 5.4-K4, 5.4-S4), tier 1; corroborated by structured JSON state-tracking guidance ("Use structured formats for state data... to help Claude understand schema requirements") in https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices, "State management best practices" section, tier 1
+  Source: runs/claude-certified-architect-foundations/source-exam-guide.txt (Domain 5, Task 5.4-K4, 5.4-S4), tier 1; corroborated by structured JSON state-tracking guidance ("Use structured formats for state data... to help Claude understand schema requirements") in https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices, "State management best practices" section, tier 2
 
 - Concept: Phase-summary injection before spawning the next subagent wave
   Type: key
@@ -198,7 +201,7 @@ Exam guide domain-5 citations reference `runs/claude-certified-architect-foundat
   Teaches: 5.4-S5
   Definition: Claude Code's `/compact` command summarizes the conversation so far — including verbose discovery output accumulated during exploration — and replaces it with a compressed version, freeing token budget while retaining awareness of what happened earlier in the session. It can be run manually (optionally with instructions on what to preserve, e.g., "focus on the refund flow findings") or triggers automatically as the context window approaches its limit.
   Example: After several hours of codebase exploration filled with grep and file-read output, a developer runs `/compact focus on the authentication bug investigation` before continuing, so the session keeps working with a condensed summary instead of hitting the context limit mid-task.
-  Source: https://code.claude.com/docs/en/context-window, tier 1; usage pattern also named directly in runs/claude-certified-architect-foundations/source-exam-guide.txt (Domain 5, Task 5.4-S5), tier 1
+  Source: https://code.claude.com/docs/en/context-window, tier 2; usage pattern also named directly in runs/claude-certified-architect-foundations/source-exam-guide.txt (Domain 5, Task 5.4-S5), tier 1
 
 ---
 
@@ -225,7 +228,7 @@ Exam guide domain-5 citations reference `runs/claude-certified-architect-foundat
   Teaches: 5.5-K3, 5.5-S3
   Definition: Rather than a single document-level confidence score, the model outputs a confidence value per extracted field. Because a model's stated confidence is not automatically well-calibrated (a field marked "90% confident" is not guaranteed to be correct 90% of the time), the review threshold applied to that confidence score must itself be calibrated against a labeled validation set — i.e., empirically checking, on data with known correct answers, what confidence level actually corresponds to what real-world accuracy, and setting the human-review cutoff based on that measured relationship rather than the raw score.
   Example: A model reports 0.85 confidence on extracted "total_amount" fields; validation against 500 labeled invoices shows that fields at 0.85 confidence are actually correct only 88% of the time, while fields at 0.95 confidence are correct 99.5% of the time — so the review threshold is set at 0.95, not 0.85, based on this calibration exercise.
-  Source: runs/claude-certified-architect-foundations/source-exam-guide.txt (Domain 5, Task 5.5-K3, 5.5-S3), tier 1; corroborated by the schema-level confidence-field pattern (`"confidence": {"type": "number"}`) documented in https://platform.claude.com/docs/en/build-with-claude/structured-outputs, "Classification" example, tier 1
+  Source: runs/claude-certified-architect-foundations/source-exam-guide.txt (Domain 5, Task 5.5-K3, 5.5-S3), tier 1; corroborated by the schema-level confidence-field pattern (`"confidence": {"type": "number"}`) documented in https://platform.claude.com/docs/en/build-with-claude/structured-outputs, "Classification" example, tier 2
 
 - Concept: Confidence-based human review routing
   Type: key
@@ -245,7 +248,7 @@ Exam guide domain-5 citations reference `runs/claude-certified-architect-foundat
   Teaches: 5.6-K1, 5.6-K2, 5.6-S1
   Definition: Source attribution (which specific document, URL, or excerpt a claim came from) is easily lost the moment findings are compressed by a summarization step, if that step only preserves the claim's content and not its origin. The fix is for subagents to output claims paired with structured source metadata — source URLs, document names, and the relevant excerpt supporting the claim — and for every downstream agent in the synthesis chain (including any summarization step) to explicitly preserve and merge these claim-source mappings rather than only merging the prose conclusions.
   Example: A research subagent's output includes `{"claim": "adoption grew 40% in 2025", "source_url": "industry-report.example.com/2025", "excerpt": "...year-over-year adoption grew 40%..."}` rather than the bare sentence "adoption grew 40% in 2025," so the fact and its provenance survive being merged with four other subagents' findings.
-  Source: runs/claude-certified-architect-foundations/source-exam-guide.txt (Domain 5, Task 5.6-K1, 5.6-K2, 5.6-S1), tier 1; corroborated by the dedicated CitationAgent that identifies "specific locations for citations" to ensure "all claims are properly attributed to their sources" in https://www.anthropic.com/engineering/multi-agent-research-system, tier 2, and by the Citations API feature, which returns per-claim source location, URL, and cited text grounding a response in its documents, documented at https://platform.claude.com/docs/en/build-with-claude/citations, tier 1
+  Source: runs/claude-certified-architect-foundations/source-exam-guide.txt (Domain 5, Task 5.6-K1, 5.6-K2, 5.6-S1), tier 1; corroborated by the dedicated CitationAgent that identifies "specific locations for citations" to ensure "all claims are properly attributed to their sources" in https://www.anthropic.com/engineering/multi-agent-research-system, tier 2, and by the Citations API feature, which returns per-claim source location, URL, and cited text grounding a response in its documents, documented at https://platform.claude.com/docs/en/build-with-claude/citations, tier 2
 
 - Concept: Conflict annotation instead of arbitrary reconciliation
   Type: key
@@ -284,35 +287,35 @@ Exam guide domain-5 citations reference `runs/claude-certified-architect-foundat
   Teaches: 5.1-K2, 5.1-K3, 5.4-K1
   Definition: A model's context window is a hard limit on the total tokens (system prompt, tool schemas, conversation history, tool results) available to it in a single request. Every category of content that loads into a session — system prompt, memory files, tool definitions, conversation turns, tool results — competes for this same finite budget, and different parts of the pipeline load automatically before the user's own content ever arrives.
   Example: Claude Code's context-window visualization shows a session's window opening already partially consumed by the system prompt (~4,200 tokens), auto-loaded memory (~680 tokens), and environment info (~280 tokens) before any user conversation begins.
-  Source: https://code.claude.com/docs/en/context-window, tier 1
+  Source: https://code.claude.com/docs/en/context-window, tier 2
 
 - Concept: The tool-use loop (tool_use / tool_result blocks)
   Type: prerequisite
   Teaches: 5.1-K4, 5.3-K1, 5.3-S1
   Definition: Claude's agentic tool use follows a defined request/response cycle: Claude responds with `stop_reason: "tool_use"` and one or more `tool_use` content blocks naming a tool and its input; the calling application executes the tool and sends back a `user` message containing a matching `tool_result` block (referencing the `tool_use_id`), optionally marked `is_error: true` with a descriptive error message if execution failed; Claude then continues the conversation using that result.
   Example: Claude emits `{"type": "tool_use", "id": "toolu_01", "name": "get_order", "input": {"order_id": "A1002"}}`; the application executes the lookup and replies with `{"type": "tool_result", "tool_use_id": "toolu_01", "content": "..."}`, or `{"is_error": true, "content": "Rate limit exceeded. Retry after 60 seconds."}` if the call failed.
-  Source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls, tier 1
+  Source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls, tier 2
 
 - Concept: System prompts for role and behavior configuration
   Type: prerequisite
   Teaches: 5.2-S1, 5.2-K1
   Definition: The `system` parameter of a Claude API request sets persistent role, tone, and behavioral instructions that apply across the whole conversation, distinct from the turn-by-turn `messages`. Setting a role, even in a single sentence, measurably focuses the model's behavior for a given use case, and is the natural place to add durable policy such as escalation criteria.
   Example: `"system": "You are Eva, a friendly and knowledgeable AI assistant for Acme Insurance Company..."` establishes identity and scope once, rather than being restated in every user turn.
-  Source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices, "Give Claude a role" section, tier 1
+  Source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices, "Give Claude a role" section, tier 2
 
 - Concept: Few-shot (multishot) prompting
   Type: prerequisite
   Teaches: 5.2-S1
   Definition: Providing a small number (typically 3–5) of worked examples, wrapped in `<example>` tags, is one of the most reliable ways to steer a model's output format, tone, and — critically for ambiguous judgment calls — its decision-making pattern. Effective examples are relevant to the real use case, diverse enough to cover edge cases, and structured so the model can distinguish example content from instructions.
   Example: A prompt includes three `<example>` blocks, each showing a customer message and the correct escalate-or-resolve decision with a one-line rationale, so the model can generalize the underlying judgment to a fourth, unseen scenario.
-  Source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices, "Use examples effectively" section, tier 1
+  Source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices, "Use examples effectively" section, tier 2
 
 - Concept: Subagents as isolated context windows
   Type: prerequisite
   Teaches: 5.1-S6, 5.4-K3, 5.4-S1, 5.4-S3
   Definition: A subagent is a specialized assistant that runs in its own separate context window, with its own system prompt and (optionally restricted) tool access, and does not inherit the parent conversation's history. It receives only a delegation message describing its task, does its work in isolation, and returns a result to the parent — meaning verbose intermediate work never touches the parent's context budget.
   Example: Claude Code's built-in Explore subagent is invoked with read-only tools (Read, Grep, Glob); it does not see the main session's prior conversation, does its own file searching, and returns a short summary such as "Found 12 database-related files."
-  Source: https://code.claude.com/docs/en/sub-agents, tier 1
+  Source: https://code.claude.com/docs/en/sub-agents, tier 2
 
 - Concept: Orchestrator-worker multi-agent pattern
   Type: prerequisite
@@ -326,28 +329,28 @@ Exam guide domain-5 citations reference `runs/claude-certified-architect-foundat
   Teaches: 5.4-K2, 5.4-S2
   Definition: An Anthropic-provided client tool (`memory_20250818`) that lets an agent create, read, update, delete, and rename files in a persistent directory across sessions, giving it a structured place to write notes that survive a context reset. The agent decides what to record, and reads its own memory files back on demand rather than needing everything re-loaded into the live context window — the same underlying mechanism scratchpad-file patterns rely on.
   Example: An agent researching a company across two separate sessions writes findings to `/memories/company_x.md` in session one, and opens that file at the start of session two instead of re-deriving everything from scratch.
-  Source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool, tier 1
+  Source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool, tier 2
 
 - Concept: Structured outputs and JSON-schema-constrained extraction
   Type: prerequisite
   Teaches: 5.1-S1, 5.5-K3, 5.5-S3
   Definition: Claude can be constrained to always return output conforming to a specified JSON schema — including fields such as a numeric `confidence` value alongside extracted content — using either the Structured Outputs feature or `tool_use` with a JSON schema. Constrained decoding restricts what tokens the model can generate at each step so the output literally cannot violate the schema, which is the mechanism that makes structured "case facts" blocks and per-field confidence scores reliably parseable.
   Example: A classification schema defines `{"category": "string", "confidence": "number", "tags": ["string"], "sentiment": "string"}` as required fields with `additionalProperties: false`, guaranteeing every response includes a numeric confidence value in a fixed location.
-  Source: https://platform.claude.com/docs/en/build-with-claude/structured-outputs, tier 1
+  Source: https://platform.claude.com/docs/en/build-with-claude/structured-outputs, tier 2
 
 - Concept: Context-management primitives (compaction and tool-result clearing)
   Type: prerequisite
   Teaches: 5.1-K3, 5.4-S5
   Definition: The Claude API exposes explicit, configurable `context_management` edits: `compact_20260112`, which replaces conversation history with a model-generated high-fidelity summary once a token threshold is crossed, and `clear_tool_uses_20250919`, which mechanically (with no inference cost) replaces old tool_result content with a placeholder while preserving the record that the call was made. Claude Code's `/compact` slash command and its automatic compaction behavior are the interactive-session expression of the same underlying idea.
   Example: A long-running agent configures `clear_tool_uses_20250919` to trigger at 100K input tokens (keeping the 6 most recent tool results) and `compact_20260112` to trigger at 200K tokens as a fallback, reducing peak context from 335K to under 170K tokens in Anthropic's own benchmark.
-  Source: https://platform.claude.com/cookbook/tool-use-context-engineering-context-engineering-tools, tier 1
+  Source: https://platform.claude.com/cookbook/tool-use-context-engineering-context-engineering-tools, tier 2
 
 - Concept: Citations feature for document-grounded attribution
   Type: prerequisite
   Teaches: 5.6-K1, 5.6-S1
   Definition: An Anthropic API feature that, when enabled on a document passed to Claude, returns detailed citations alongside generated claims — the exact passage and source document that supports each part of the response — allowing an application to verify and surface exactly which source backs which statement, rather than trusting an unattributed summary.
   Example: Asking "What color is the grass and sky?" against a document with citations enabled returns not just "The grass is green and the sky is blue" but a citation block pointing to the exact source sentence for each color claim.
-  Source: https://platform.claude.com/docs/en/build-with-claude/citations, tier 1
+  Source: https://platform.claude.com/docs/en/build-with-claude/citations, tier 2
 
 - Concept: Human-in-the-loop checkpoints and guardrails in agentic systems
   Type: prerequisite
