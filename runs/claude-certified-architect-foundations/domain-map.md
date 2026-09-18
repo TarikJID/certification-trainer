@@ -29,7 +29,7 @@
   about which exam this material describes — exam code CCAR-F and credential name "Claude Certified
   Architect – Foundations" appear consistently on every page footer/header and in Section 3 ("Exam
   Details at a Glance").
-- Total task statements: 27 (Domain 1: 7, Domain 2: 5, Domain 3: 6, Domain 4: 6, Domain 5: 6).
+- Total task statements: 30 (Domain 1: 7, Domain 2: 5, Domain 3: 6, Domain 4: 6, Domain 5: 6).
 - Total bullets captured: 240 (Domain 1: 48, Domain 2: 43, Domain 3: 49, Domain 4: 47, Domain 5: 53).
   These counts were derived by manually tallying every bullet under every "Knowledge of:" and
   "Skills in:" heading for every task statement, including bullets that fall immediately after a PDF
@@ -58,7 +58,7 @@ multi-agent systems, configuring subagent spawning and context passing, enforcin
 workflows with hooks and handoffs, decomposing complex workflows into tasks, and managing session
 state/resumption/forking with the Claude Agent SDK.
 
-Task statements: 7 · Bullets captured: 48 (28 Knowledge, 20 Skills)
+Task statements: 7 · Bullets captured: 48 (24 Knowledge, 24 Skills)
 
 ### Task statements
 
@@ -307,7 +307,7 @@ prompting for consistency, enforcing structured output via tool_use and JSON sch
 validation/retry/feedback loops for extraction, designing batch processing strategies, and designing
 multi-instance/multi-pass review architectures.
 
-Task statements: 6 · Bullets captured: 47 (23 Knowledge, 24 Skills)
+Task statements: 6 · Bullets captured: 47 (22 Knowledge, 25 Skills)
 
 ### Task statements
 
@@ -479,13 +479,17 @@ Task statements: 6 · Bullets captured: 53 (24 Knowledge, 29 Skills)
 
 | Domain | Weight | Task statements | Knowledge bullets | Skills bullets | Total bullets |
 |---|---|---|---|---|---|
-| 1. Agentic Architecture & Orchestration | 27% | 7 | 28 | 20 | 48 |
+| 1. Agentic Architecture & Orchestration | 27% | 7 | 24 | 24 | 48 |
 | 2. Tool Design & MCP Integration | 18% | 5 | 20 | 23 | 43 |
 | 3. Claude Code Configuration & Workflows | 20% | 6 | 23 | 26 | 49 |
-| 4. Prompt Engineering & Structured Output | 20% | 6 | 23 | 24 | 47 |
+| 4. Prompt Engineering & Structured Output | 20% | 6 | 22 | 25 | 47 |
 | 5. Context Management & Reliability | 15% | 6 | 24 | 29 | 53 |
-| **Total** | **100%** | **30 task statements... (see note)** | **118** | **122** | **240** |
+| **Total** | **100%** | **30** | **113** | **127** | **240** |
 
 Note: the table's "task statements" column sums to 7+5+6+6+6 = 30, matching the 30 task statements
-(1.1–1.7, 2.1–2.5, 3.1–3.6, 4.1–4.6, 5.1–5.6) enumerated above. Total bullets captured across the
-guide: 240.
+(1.1–1.7, 2.1–2.5, 3.1–3.6, 4.1–4.6, 5.1–5.6) enumerated above. The Knowledge/Skills bullet counts in
+this table were recomputed by counting the `-K<n>` and `-S<n>` IDs actually present under each task
+statement above (not carried over from an earlier, miscalculated draft): Domain 1 = 24 Knowledge / 24
+Skills, Domain 2 = 20/23, Domain 3 = 23/26, Domain 4 = 22/25, Domain 5 = 24/29, for a grand total of
+113 Knowledge bullets, 127 Skills bullets, and 240 bullets overall — consistent with the per-domain
+"Bullets captured" line stated under each domain heading above.
