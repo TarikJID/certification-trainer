@@ -76,6 +76,12 @@ before the learner has attempted the question.
   explicitly listed in `course-outline.md` as deliberately excluded, with a reason.
 - Every lesson has concept explanations with examples, and a quiz.
 - Every module has a hands-on exercise.
+- **Every concept tested in a quiz or exercise is taught in a lesson at or before that
+  module.** This is a set comparison, not a judgement: the concepts appearing in
+  questions must be a subset of the concepts already taught. A question about something
+  the course never teaches cannot be worked around by whoever teaches from these
+  files — by then the file is written. State the totals: concepts tested, concepts
+  tested that are not taught (which must be zero).
 - The sequence satisfies the prerequisite rule: no concept is taught before its
   prerequisites.
 - Any concept marked `Status: UNSOURCED` in the research is carried into the course

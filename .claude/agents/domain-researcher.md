@@ -89,6 +89,22 @@ For each concept:
                            only where the source is not official)
 ```
 
+### The fetch record
+
+Your file carries one `Fetched:` list naming every URL you opened with `WebFetch`:
+
+```
+Fetched:
+  - <url>
+  - <url>
+```
+
+Every URL appearing in any `Source:` line must also appear in this list. `WebSearch`
+returns a synthesised summary of pages alongside the result list, so it is possible to
+write a concept from that summary and cite a URL you never opened — and the output is
+indistinguishable from properly sourced work. This list is what makes the difference
+visible: a citation with no matching fetch is a claim about a page nobody read.
+
 ### The terminal rule — when nothing can be sourced
 
 If, after genuine search, a concept has no source at all — official or otherwise —
@@ -133,6 +149,8 @@ learner needs immediately before that key concept. Do not recurse further
   way.
 - Every cited source meets the quality bar above (authoritative/official — no
   forums, social, or blogs).
+- **Every URL you cite appears in your `Fetched:` list.** A citation to a page you did
+  not open is not a source, however official the domain looks.
 - No concept cites a non-official source where an official one exists, and every
   non-official citation names the source and says why nothing official covers it.
   **Official sources are not ranked**, so a concept sourced to the exam guide rather
