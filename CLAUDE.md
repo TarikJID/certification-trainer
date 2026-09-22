@@ -48,7 +48,13 @@ Do not proceed until that agreement is explicit.
    bullets and their IDs) plus all researcher outputs.
 10. Send `course-builder`'s output to `evaluator`.
 11. On REWORK: route the verdict file path back to `course-builder`.
-12. On PASS: tell the user the course is ready, and where it was written.
+12. On PASS: copy `tutor-template/` into `courses/<certification-name>/` — the
+    `CLAUDE.md`, the `progress/` folder and the `.claude/` folder, as they are. It is a
+    straight copy: nothing in it is generated, and nothing in it is
+    certification-specific. The tutor reads `course-outline.md` for the module list, so
+    do not write a second copy of that list anywhere.
+13. Tell the user the course is ready, where it was written, and that opening that
+    folder in Claude Code starts the tutor.
 
 ## Commit before every evaluation
 
