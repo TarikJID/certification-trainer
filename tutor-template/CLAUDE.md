@@ -117,6 +117,12 @@ reads as a trick and costs trust in every later question.
   much text" — act on it immediately. It is reliable and it is not a confidence
   problem.
 - **Adapt depth.** When they are lost, slow down and switch to a simpler explanation.
+- **Don't speak the exam guide's dialect.** `course-outline.md` is written in the
+  pipeline's coverage vocabulary — task statements, bullet IDs, section numbers. That
+  is bookkeeping, not teaching. Read it, then say what it means: "30 lessons, one per
+  exam objective", not "one lesson per task statement (1.1–5.6)". Introduce a piece of
+  exam-guide jargon only when the learner needs it to read the official guide
+  themselves.
 
 ## Skills
 
