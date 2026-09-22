@@ -6,13 +6,13 @@
 
 ![Agents](https://img.shields.io/badge/4%20Agents-%2B%20orchestrator-2EA043?style=for-the-badge)
 &nbsp;
-![Verified](https://img.shields.io/badge/Coverage-240%2F240%20verified-6E40C9?style=for-the-badge)
+![Scope](https://img.shields.io/badge/Works%20on-any%20certification-6E40C9?style=for-the-badge)
 &nbsp;
-![Cost](https://img.shields.io/badge/Full%20run-%2428.09-FF6F61?style=for-the-badge)
+![Evaluated](https://img.shields.io/badge/Evaluated-every%20stage-FF6F61?style=for-the-badge)
 &nbsp;
 [![Built with Claude](https://img.shields.io/badge/Built%20with-Claude%20Code-D97757?style=for-the-badge&logo=anthropic&logoColor=white)](https://claude.com/claude-code)
 
-[**How it works**](#how-it-works) · [**The agents**](#the-agents) · [**Running it**](#running-it) · [**What it produced**](#what-it-produced) · [**Guardrails**](#guardrails)
+[**How it works**](#how-it-works) · [**The agents**](#the-agents) · [**Running it**](#running-it) · [**Design notes**](#design-notes) · [**Guardrails**](#guardrails)
 
 </div>
 
@@ -22,10 +22,11 @@ A multi-agent pipeline that takes a certification exam, researches every domain 
 assembles a sequenced course — lessons, quizzes and exercises — that a tutor can teach from.
 
 It is built to work on **any certification**, not one. Nothing certification-specific lives in the
-agent definitions. The pipeline is the product; a course is what falls out of running it.
+agent definitions; the exam is an input, not a configuration. The pipeline is the product, and a
+course is what falls out of running it.
 
 The design goal that shapes everything else: **every claim the pipeline makes about its own output
-should be checkable.** Not "the research passed evaluation" but *here are the 240 exam bullets, here
+should be checkable.** Not *"the research passed evaluation"* but *here are the exam's bullets, here
 is the lesson teaching each one, and here is the set comparison showing none missing and none
 invented.*
 
@@ -50,44 +51,45 @@ invented.*
       a course
 ```
 
-An **evaluator runs between every stage**, not once at the end. That is deliberate: in a chained
-system a bad early output is consumed by everything downstream, so a single check at the end tells
-you the course is wrong without telling you *which stage* made it wrong — and wastes all the work
-built on the bad foundation.
+An **evaluator runs between every stage**, not once at the end. In a chained system a bad early
+output is consumed by everything downstream, so a single check at the end tells you the course is
+wrong without telling you *which stage* made it wrong — and throws away all the work built on the
+bad foundation.
 
 Each evaluation writes a **verdict file** recording every checklist item, with an evidence column
 and a separate `Not checked` section. Passes are recorded too: a file listing only failures is no
-evidence the rest was examined.
+evidence that the rest was examined.
 
 ## The agents
 
 | Agent | Job | Tools | Notable |
 |-------|-----|-------|---------|
-| **`domain-mapper`** | Fetch the official exam page, produce structured domains with task statements verbatim and stable bullet IDs | `Read` `WebSearch` `WebFetch` `Write` | The IDs it assigns are cited by every downstream stage — that is what makes coverage a set comparison |
-| **`domain-researcher`** | Research one domain: concepts, prerequisites, definitions, examples, sources. Runs as N parallel instances | `Read` `WebSearch` `WebFetch` `Write` | Prerequisite tracing is capped at one level. Must record a `Fetched:` list, and every cited URL must appear in it |
+| **`domain-mapper`** | Fetch the official exam page; produce structured domains with task statements verbatim and stable bullet IDs | `Read` `WebSearch` `WebFetch` `Write` | The IDs it assigns are cited by every downstream stage — that is what turns coverage into a set comparison |
+| **`domain-researcher`** | Research one domain: concepts, prerequisites, definitions, examples, sources. Runs as N parallel instances | `Read` `WebSearch` `WebFetch` `Write` | Prerequisite tracing capped at one level. Records a `Fetched:` list, and every cited URL must appear in it |
 | **`course-builder`** | Assemble the research into a sequenced course on disk | `Read` `Write` | **No web tools, deliberately.** "Use only the material you were handed" is enforced by tool scope, not prompt text |
-| **`evaluator`** | Check a stage's output against *that stage's own* `Done when` checklist | `Read` `WebSearch` `WebFetch` `Write` | Never modifies the work it judges. Verifies against whatever source the checklist designates — so it is reusable across all three stages |
+| **`evaluator`** | Check a stage's output against *that stage's own* `Done when` checklist | `Read` `WebSearch` `WebFetch` `Write` | Never modifies the work it judges. Verifies against whatever source the checklist designates — which is what makes it reusable across all three stages |
 
-The orchestrator lives in [`CLAUDE.md`](CLAUDE.md): user-agreement phase, dispatch, per-stage retry
-cap of 2 with escalation, partial re-run on parallel failure, and file-path passing between stages
+The orchestrator lives in [`CLAUDE.md`](CLAUDE.md): the user-agreement phase, dispatch, a per-stage
+retry cap with escalation, partial re-run on parallel failure, and file-path passing between stages
 so the corpus never flows through the orchestrator's own context.
 
 ## Running it
 
-**This repo is the pipeline, and it needs its own session.** Open it in
-[Claude Code](https://claude.com/claude-code) from its own directory so `CLAUDE.md` loads as the
-orchestrator. Do not run it from inside another project — two `CLAUDE.md` identities in one context
-means the orchestrator ends up doing the work it is explicitly forbidden to do.
+**The pipeline needs its own session.** Open this repo in
+[Claude Code](https://claude.com/claude-code) from its own directory, so `CLAUDE.md` loads as the
+orchestrator. Running it from inside another project puts two `CLAUDE.md` identities in one context,
+and the orchestrator ends up doing the work it is explicitly forbidden to do.
 
-The pipeline needs **general web access**. Three of the four agents fetch pages; only
-`course-builder` can run without it.
+**It needs general web access.** Three of the four agents fetch pages. Only `course-builder` can run
+without it — which is a consequence of its tool scope, not a coincidence.
 
-Then simply name a certification:
+Then name a certification:
 
 > *"Build a course for the AWS Certified Solutions Architect – Associate exam."*
 
-The orchestrator will agree the exact certification with you first — same exam, same level, same
-version — before any research starts.
+The orchestrator agrees the exact certification with you first — same exam, same level, same
+version — before any research starts. A link helps; a name alone will do, and it will ask until
+there is no ambiguity left.
 
 ### Output layout
 
@@ -104,44 +106,47 @@ courses/<certification-name>/
   course-outline.md    includes the bullet-ID → lesson table
 ```
 
-Everything is committed between stages, so `git log -p runs/` reconstructs the whole run
-afterwards — what changed, when, and in what order.
+Work is committed between stages, so `git log -p runs/` reconstructs the whole run afterwards —
+what changed, when, and in what order.
 
-## What it produced
+## Design notes
 
-Two runs against the same certification (Claude Certified Architect — Foundations):
+The choices that are easy to miss, and the reasoning behind them:
 
-| | Run 1 · 15 Sept | Run 2 · 18 Sept |
-|---|---|---|
-| Cost | $53.68 | **$28.09** |
-| Concepts | 115 | **186** |
-| Course | 6 modules, ~3,880 lines | **10 modules, 5,512 lines** |
-| Coverage | unverifiable | **240/240 bullet IDs, exact set match** |
-| Verdict files | 0 | **11** |
-| What reworks were about | source-tier labels | **citation faithfulness** |
-
-The last row is the one worth reading twice. All three researcher reworks in run 2 were citation
-faithfulness failures — a prerequisite mis-attributed, a concept whose cited source did not support
-it, two attributions "not faithful to the source they cite". Real, official, on-topic pages carrying
-claims that were not on them, caught mechanically.
-
-**Coverage is not quality.** Every bullet has a lesson and the citations survived scrutiny. Whether
-the course *teaches well* still needs a human reading a lesson.
+- **Coverage is a set comparison, not a promise.** The exam guide's bullets get stable IDs at the
+  mapper stage and are cited all the way through to the course outline's bullet-to-lesson table. So
+  "nothing was dropped" becomes two set differences that either are empty or are not. A claim only
+  becomes checkable once you can write it that way.
+- **Ground truth has to sit outside the pipeline.** Grading the course against the domain map proves
+  nothing — a course built faithfully on a broken map looks perfect. The exam guide is the yardstick
+  precisely because the pipeline did not produce it.
+- **Missing sources never block.** If a concept cannot be sourced after genuine search, it is taught
+  anyway, flagged `UNSOURCED`, with a record of the queries run. A checklist with no defined
+  behaviour for "this is impossible" leaves an agent only two options — comply or stall — and stall
+  is what it will do.
+- **Rework is bounded.** A dispatch → evaluate → rework cycle with no exit condition loops forever,
+  so retries are capped per stage and a third failure escalates to you with every verdict file for
+  that stage, rather than burning budget.
+- **Parallel failures re-run one branch.** Rework is routed to the instance that failed; outputs
+  already passed are held, not regenerated.
+- **The evaluator never fills gaps.** Its web access is for verifying what is in the output, never
+  for researching what is missing. An evaluator that fills a gap has quietly become a producer, and
+  the rework signal disappears.
 
 ## Guardrails
 
-[`GUARDRAILS.md`](GUARDRAILS.md) lists what the system must never do, and — more usefully — *where
+[`GUARDRAILS.md`](GUARDRAILS.md) lists what the system must never do and — more usefully — *where
 each rule is actually enforced*. Every policy names a mechanism and an honest verb:
 
 | Mechanism | Verb |
 |---|---|
 | Tool scope — the harness never grants the capability | **blocks** |
 | Runtime guardrail — a classifier in the request path | **blocks** |
-| Evaluator checklist — a `Done when` item, failure routes to rework | **measures** |
+| Evaluator checklist — a `Done when` item; failure routes to rework | **measures** |
 | Prompt — the agent is told not to | **requests** |
 
-A rule whose only verb is *request* is a known weak point, not a control. One of the four policies
-has no structural backstop available at all, and the file says so rather than implying otherwise.
+A rule whose only verb is *request* is a known weak point, not a control. One of the policies has no
+structural backstop available at all, and the file says so rather than implying otherwise.
 
 ## Repo layout
 
@@ -149,21 +154,28 @@ has no structural backstop available at all, and the file says so rather than im
 .claude/agents/     the four agent definitions — one file, one role
 CLAUDE.md           the orchestrator
 GUARDRAILS.md       policies and their enforcement points
-reference/          test fixtures for grading runs — agents never read from here
+reference/          fixtures for grading a run — agents never read from here
 runbooks/           procedures for specific run shapes
 runs/               produced by a run (see Output layout above)
 courses/            produced by a run — the deliverable
 ```
 
-`reference/` holds an independently extracted exam guide used to *grade* a run's coverage.
-`domain-mapper` is explicitly told never to read from it, and the file carries its own extraction
-fingerprints so a mapper that copies it can be caught.
+`reference/` holds independently extracted exam material used to *grade* a run's coverage after the
+fact. `domain-mapper` is explicitly told never to read from it, and a fixture carries its own
+extraction fingerprints so a mapper that copied it could be caught.
+
+## Status
+
+The pipeline has been run end-to-end against a real certification and produced a complete,
+coverage-verified course. What it does **not** yet verify is teaching quality: every bullet having a
+lesson, and every citation holding up, is not the same as the course teaching well. That still needs
+a human reading a lesson.
 
 ---
 
 <div align="center">
 
-Built as the case study for the **Agent Engineering Bootcamp** —
-[TarikJID/multi-agent-course](https://github.com/TarikJID/multi-agent-course)
+Built as the working case study for the
+[Agent Engineering Bootcamp](https://github.com/TarikJID/multi-agent-course).
 
 </div>
