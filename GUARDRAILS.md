@@ -37,7 +37,7 @@ Anything whose only verb is *request* is a known weak point, not a control.
 | 1 | Reveal a quiz answer before the learner has attempted it | both | runtime guardrail | blocks | no |
 | 2 | Present fabricated or unsourced content as official | output | evaluator checklist + tool scope | measures + blocks | **yes** |
 | 3 | Abandon a concept the learner has not understood | output | prompt (+ optional after-the-fact measure) | requests | no |
-| 4 | Quiz or exercise a learner on material the course never taught | both | evaluator checklist, at build time | measures | no |
+| 4 | Quiz or exercise a learner on material the course never taught | both | evaluator checklist, at build time | measures | **yes** |
 
 ---
 
@@ -76,10 +76,12 @@ Two controls doing different jobs:
 **Status: built, and it fires.** All three researcher reworks in the 18 Sept run were citation-
 faithfulness failures — claims wearing citations the cited page did not support.
 
-**Known hole.** `WebSearch` returns a synthesised summary alongside the result list. A researcher
-can write a concept from that summary and cite a URL it never fetched; the output is
-indistinguishable from properly sourced work. Closing it needs a `Fetched:` list in the research
-file, with every cited URL required to appear in it.
+**The `WebSearch` hole, and how it is closed.** `WebSearch` returns a synthesised summary alongside
+the result list. A researcher could write a concept from that summary and cite a URL it never
+opened — output indistinguishable from properly sourced work. So
+[`.claude/agents/domain-researcher.md`](.claude/agents/domain-researcher.md) now requires a
+`Fetched:` list naming every URL opened with `WebFetch`, and a `Done when` item requiring every
+cited URL to appear in it. A citation with no matching fetch is a claim about a page nobody read.
 
 ### 3. Never abandon a concept the learner has not understood
 
@@ -124,22 +126,37 @@ So the check belongs where the file is produced, and it is a set comparison — 
 
 > Every concept tested in a quiz or exercise appears in a lesson at or before that module.
 
-`course-builder`'s existing checklist does not cover this. Item 3 requires each lesson to *have* a
-quiz; item 5 enforces prerequisite ordering for concepts that are taught. Neither checks that quiz
-questions stay inside taught material.
+Before this was installed, `course-builder`'s checklist did not cover it. Item 3 requires each
+lesson to *have* a quiz; item 5 enforces prerequisite ordering for concepts that are taught. Neither
+kept quiz questions inside taught material.
 
-**Status: not built.** Adding it means one new item on `course-builder`'s `Done when` checklist.
+**Status: built.** Enforced by the `Done when` item in
+[`.claude/agents/course-builder.md`](.claude/agents/course-builder.md) beginning *"Every concept
+tested in a quiz or exercise is taught in a lesson at or before that module."* It also requires the
+totals be stated — concepts tested, and concepts tested that are not taught, which must be zero.
 
 ---
 
-## Summary of what is missing
+## Where each policy actually lives
+
+A policy document nobody reads enforces nothing. Agents obey their `Done when` checklists, because
+that is the one thing the evaluator reads. So this table is the link between a policy here and the
+line that enforces it — **keep it current when either side changes.**
+
+| # | Enforced by | Where |
+|---|---|---|
+| 1 | nothing yet | needs the tutor to exist |
+| 2 | checklist items + tool scope | `domain-researcher.md` (attribution, `Fetched:`), `course-builder.md` (item 6, `UNSOURCED` carried through), and `course-builder`'s tool list — no web tools |
+| 3 | prompt only, by necessity | no structural backstop exists; see the section above |
+| 4 | checklist item | `course-builder.md` — *"Every concept tested in a quiz or exercise is taught in a lesson at or before that module"* |
+
+## Still missing
 
 | Gap | Cost to close |
 |---|---|
-| `Fetched:` list in research files, cited URLs required to appear in it | one output field, one checklist item |
-| Quiz-coverage item on `course-builder`'s checklist | one checklist item |
-| Runtime guardrail for answer leaks | needs the tutor to exist |
-| Per-concept comprehension state in the tutor | needs the tutor to exist |
+| Runtime guardrail for answer leaks (policy 1) | needs the tutor to exist |
+| Per-concept comprehension state in the tutor (policy 3) | needs the tutor to exist |
 
-Three of the four gaps are cheap. The fourth is not a gap in a control — it is a control that
-cannot exist without a log that does not exist yet.
+Both are blocked on the same thing. Note that the second is not a gap in a control — it is a control
+that cannot exist without a log that does not exist yet, which makes building that log a
+prerequisite for the policy meaning anything.
