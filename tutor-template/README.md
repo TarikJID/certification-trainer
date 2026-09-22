@@ -15,6 +15,20 @@ straight copy, byte-identical every run. The module list is not duplicated into 
 tutor — it reads `course-outline.md`, which the course already carries, so there is
 nothing to go stale.
 
+## Publishing a course as its own repo
+
+Inside a run the tutor is copied into `courses/<certification-name>/`, where several
+courses can sit side by side.
+
+**When a course is published as its own repository, move its contents to the repo
+root** — `CLAUDE.md`, `.claude/`, `progress/`, `course-outline.md` and the module
+folders. Claude Code loads `.claude/` from the working directory, so a tutor left in a
+subfolder has no registered `/start`: opening the repo gives you a session where the
+commands silently do not exist.
+
+Nothing in the template changes. `CLAUDE.md` refers to `course-outline.md` and the
+module folders as siblings, which is true in both layouts.
+
 ## The two design decisions worth knowing
 
 **Two axes, closed independently.** Every concept is tracked on `recall` (can name it
