@@ -1,12 +1,28 @@
 # Evaluation and guardrails
 
-How this pipeline knows whether its own output is any good, and what stops it doing
-things it should not.
+**Who this is for:** anyone deciding whether to trust this pipeline, or borrowing ideas
+from it. It assumes you have read [`README.md`](README.md) and nothing else.
 
-[`GUARDRAILS.md`](GUARDRAILS.md) is the register — the policies, their enforcement
-points, and their current status. **This file is the reasoning**: why evaluation is
-shaped the way it is, what was measured and what deliberately was not, and what
-building this turned up.
+A multi-agent system that researches and writes a course can produce something fluent,
+complete-looking and wrong. This file is about the two things standing between that and
+what actually ships:
+
+- **Evaluation** — how the pipeline measures its own output, and which of those
+  measurements are worth anything.
+- **Guardrails** — what it must never do, and whether each rule can actually stop it.
+
+[`GUARDRAILS.md`](GUARDRAILS.md) is the register: the policies, where each is enforced,
+and its status. **This file is the reasoning behind it** — including the parts that do
+not work, which are more informative than the parts that do.
+
+**If you read one thing here**, make it the distinction running through all of it:
+
+> A rule is only as strong as the place it lives. Tool scope and a runtime classifier
+> **block**. A checklist item **measures**. A line in a prompt **requests** — and
+> anything whose only verb is *request* is a known weak point, not a control.
+
+What follows is mostly that test, applied honestly, including where it comes out
+badly.
 
 ---
 
@@ -98,8 +114,8 @@ proxy for correctness — it is a different, cheaper, and actually measurable th
 **Trajectory: Observation Utilization.** Of the pages it fetched, how many did it cite?
 
 Chosen over Trajectory Efficiency deliberately. Efficiency is *steps taken versus the
-minimum needed*, and nobody can say what the minimum number of searches to research 43
-exam bullets is. A metric with no threshold to fail against is not yet a judgement.
+minimum needed*, and nobody can say what the minimum number of web searches
+needed to research one domain is. A metric with no threshold to fail against is not yet a judgement.
 Observation Utilization needs no baseline — it is a set comparison between what was
 fetched and what was used.
 
@@ -152,7 +168,8 @@ access, which is a consequence of the design, not a coincidence.
 
 **By checklist — citation faithfulness.** Concepts must be attributed to a source, and
 the evaluator verifies by fetching the page and searching it. This is the control with
-the most evidence behind it: on one run, all three researcher reworks were caught by it.
+the most evidence behind it. On the first fully-instrumented run, every researcher
+rework was triggered by this check and nothing else.
 
 **By checklist — the `Fetched:` list.** `WebSearch` returns a synthesised summary of
 pages alongside the result list. A researcher could write a concept from that summary
@@ -179,7 +196,9 @@ plainly rather than dressed up.
 
 ## Part 3 — What building this turned up
 
-Three findings, each of which changed something.
+Three findings, each of which changed the design. They are here rather than in a private
+retrospective because each is a way this kind of system fails *quietly*, and none was
+caught by re-reading the specs.
 
 ### A rule in prose is a rule the evaluator never sees
 
