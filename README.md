@@ -121,8 +121,8 @@ The repo is the pipeline definition. Everything else is produced by running it.
   evaluator.md
 CLAUDE.md                   the orchestrator: phases, dispatch, retry caps, context rules
 GUARDRAILS.md               what the system must never do, and where each rule is enforced
-EVALUATION-AND-GUARDRAILS.md  the reasoning behind both — what is measured, what is not,
-                              and which rules actually stop anything
+EVALUATION-AND-GUARDRAILS.md  every control added to the pipeline, where it lives, and
+                              what is not enforced
 reference/                  fixtures for grading a run — agents never read from here
 runbooks/                   prompts for a human to paste when launching a run
 ```
