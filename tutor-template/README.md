@@ -43,16 +43,15 @@ again forever. A record of a clean cold answer closes the item, and a closed ite
 never re-asked. This is the single most important property of the file, and it came
 from watching the failure happen.
 
-## Guardrail status
+## Controls in this template
 
-Two of the four policies in [`../GUARDRAILS.md`](../GUARDRAILS.md) are tutor policies,
-and this template is where they land. Be precise about what they achieve:
+Two of the pipeline's controls live here rather than in an agent definition. Both are
+listed in [`../EVALUATION-AND-GUARDRAILS.md`](../EVALUATION-AND-GUARDRAILS.md).
 
-| Policy | Mechanism here | Verb |
+| Control | How it works here | Enforced? |
 |---|---|---|
-| Never reveal a quiz answer before an attempt | Attempt written to the log before `quiz-answers.md` is opened; answers held in a separate file so they are not in context during the question | **requests**, and leaves evidence |
-| Never abandon a concept that has not landed | Per-concept `shaky` status and a **Still open** list | **requests** |
+| Quiz answers are not revealed before an attempt | The attempt is written to the log before `quiz-answers.md` is opened, and answers sit in a separate file so they are not in context while the question is asked | **No** — the tutor follows the rule and leaves evidence. Nothing reads that log |
+| A concept that has not landed is not abandoned | Per-concept `shaky` status and a **Still open** list | **No** — prompt only |
 
 Neither is a wall, and the template says so in its own words rather than implying
-otherwise. The attempt log makes a leak *visible afterwards* — but only becomes a
-**measure** once something actually reads it looking for one. Nothing does yet.
+otherwise.
