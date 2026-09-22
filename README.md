@@ -12,7 +12,7 @@
 &nbsp;
 [![Built with Claude](https://img.shields.io/badge/Built%20with-Claude%20Code-D97757?style=for-the-badge&logo=anthropic&logoColor=white)](https://claude.com/claude-code)
 
-[**How it works**](#how-it-works) · [**The agents**](#the-agents) · [**Running it**](#running-it) · [**Design notes**](#design-notes) · [**Guardrails**](#guardrails)
+[**How it works**](#how-it-works) · [**The agents**](#the-agents) · [**Running it**](#running-it) · [**Repo layout**](#repo-layout) · [**Status**](#status)
 
 </div>
 
@@ -109,60 +109,33 @@ courses/<certification-name>/
 Work is committed between stages, so `git log -p runs/` reconstructs the whole run afterwards —
 what changed, when, and in what order.
 
-## Design notes
-
-The choices that are easy to miss, and the reasoning behind them:
-
-- **Coverage is a set comparison, not a promise.** The exam guide's bullets get stable IDs at the
-  mapper stage and are cited all the way through to the course outline's bullet-to-lesson table. So
-  "nothing was dropped" becomes two set differences that either are empty or are not. A claim only
-  becomes checkable once you can write it that way.
-- **Ground truth has to sit outside the pipeline.** Grading the course against the domain map proves
-  nothing — a course built faithfully on a broken map looks perfect. The exam guide is the yardstick
-  precisely because the pipeline did not produce it.
-- **Missing sources never block.** If a concept cannot be sourced after genuine search, it is taught
-  anyway, flagged `UNSOURCED`, with a record of the queries run. A checklist with no defined
-  behaviour for "this is impossible" leaves an agent only two options — comply or stall — and stall
-  is what it will do.
-- **Rework is bounded.** A dispatch → evaluate → rework cycle with no exit condition loops forever,
-  so retries are capped per stage and a third failure escalates to you with every verdict file for
-  that stage, rather than burning budget.
-- **Parallel failures re-run one branch.** Rework is routed to the instance that failed; outputs
-  already passed are held, not regenerated.
-- **The evaluator never fills gaps.** Its web access is for verifying what is in the output, never
-  for researching what is missing. An evaluator that fills a gap has quietly become a producer, and
-  the rework signal disappears.
-
-## Guardrails
-
-[`GUARDRAILS.md`](GUARDRAILS.md) lists what the system must never do and — more usefully — *where
-each rule is actually enforced*. Every policy names a mechanism and an honest verb:
-
-| Mechanism | Verb |
-|---|---|
-| Tool scope — the harness never grants the capability | **blocks** |
-| Runtime guardrail — a classifier in the request path | **blocks** |
-| Evaluator checklist — a `Done when` item; failure routes to rework | **measures** |
-| Prompt — the agent is told not to | **requests** |
-
-A rule whose only verb is *request* is a known weak point, not a control. One of the policies has no
-structural backstop available at all, and the file says so rather than implying otherwise.
-
 ## Repo layout
 
+The repo is the pipeline definition. Everything else is produced by running it.
+
 ```
-.claude/agents/     the four agent definitions — one file, one role
-CLAUDE.md           the orchestrator
-GUARDRAILS.md       policies and their enforcement points
-reference/          fixtures for grading a run — agents never read from here
-runbooks/           procedures for specific run shapes
-runs/               produced by a run (see Output layout above)
-courses/            produced by a run — the deliverable
+.claude/agents/
+  domain-mapper.md          the four agent definitions — one file, one role
+  domain-researcher.md
+  course-builder.md
+  evaluator.md
+CLAUDE.md                   the orchestrator: phases, dispatch, retry caps, context rules
+GUARDRAILS.md               what the system must never do, and where each rule is enforced
+reference/                  fixtures for grading a run — agents never read from here
+runbooks/                   prompts for a human to paste when launching a run
 ```
 
-`reference/` holds independently extracted exam material used to *grade* a run's coverage after the
-fact. `domain-mapper` is explicitly told never to read from it, and a fixture carries its own
-extraction fingerprints so a mapper that copied it could be caught.
+`runs/` and `courses/` appear only once you run it — see [Output layout](#output-layout)
+above — and neither is committed here. A finished course is its own repo, so this one
+stays the tool rather than accumulating outputs.
+
+**`reference/`** holds exam material extracted independently of the pipeline, used to
+*grade* a run's coverage after the fact. `domain-mapper` is explicitly told never to
+read from it, and a fixture carries its own extraction fingerprints so a mapper that
+copied it could be caught.
+
+**`runbooks/`** are for a human to paste, not for any agent to load — launch prompts
+and the reasoning behind how a long run is split into sessions.
 
 ## Status
 
