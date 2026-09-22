@@ -127,7 +127,8 @@ runbooks/                   prompts for a human to paste when launching a run
 
 `runs/` and `courses/` appear only once you run it — see [Output layout](#output-layout)
 above — and neither is committed here. A finished course is its own repo, so this one
-stays the tool rather than accumulating outputs.
+stays the tool rather than accumulating outputs. See
+[an example](https://github.com/TarikJID/claude-certified-architect-foundations).
 
 **`reference/`** holds exam material extracted independently of the pipeline, used to
 *grade* a run's coverage after the fact. `domain-mapper` is explicitly told never to
@@ -140,9 +141,13 @@ and the reasoning behind how a long run is split into sessions.
 ## Status
 
 The pipeline has been run end-to-end against a real certification and produced a complete,
-coverage-verified course. What it does **not** yet verify is teaching quality: every bullet having a
-lesson, and every citation holding up, is not the same as the course teaching well. That still needs
-a human reading a lesson.
+coverage-verified course — **[example output](https://github.com/TarikJID/claude-certified-architect-foundations)**,
+shipped with the `runs/` audit trail so its coverage claim can be checked rather than taken on
+trust.
+
+What it does **not** yet verify is teaching quality: every bullet having a lesson, and every
+citation holding up, is not the same as the course teaching well. That still needs a human reading
+a lesson.
 
 ---
 
