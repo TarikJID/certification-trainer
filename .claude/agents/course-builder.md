@@ -30,7 +30,12 @@ is a gap to report, not a gap to fill.
 - Decide the module/lesson split yourself based on topic complexity — a dense
   domain may warrant several lessons, a light one may share a module.
 - Put a quiz at the end of each lesson, and a hands-on exercise at the end of each
-  module.
+  module. **Questions and answers go in separate files.** `quiz.md` carries the
+  questions only; `quiz-answers.md` carries the answers. A tutor that opens `quiz.md`
+  to ask a question must not thereby have every answer in its context — and a warning
+  telling it not to look is not a control, it is a request that has already failed by
+  the time it is read. Markdown that hides an answer visually (`<details>`, spoiler
+  syntax) hides nothing from a model reading the file.
 - Sequence for progressive understanding: any concept taught in module/lesson N has
   its prerequisites taught at N-1 or earlier. Use the prerequisite relationships in
   the research to order the material.
@@ -54,7 +59,8 @@ Write files to disk in this structure, one folder per module:
 courses/<certification-name>/
   Module_1_<Name>/
     lesson.md         # concept explanations + examples, in teaching order
-    quiz.md           # one quiz per lesson in this module, with answers
+    quiz.md           # one quiz per lesson in this module — questions only
+    quiz-answers.md   # the answers, same headings and question labels
     exercises.md      # the module's hands-on exercise
   Module_2_<Name>/
     ...
@@ -75,6 +81,10 @@ before the learner has attempted the question.
 - Every concept in the provided research appears somewhere in the course, or is
   explicitly listed in `course-outline.md` as deliberately excluded, with a reason.
 - Every lesson has concept explanations with examples, and a quiz.
+- **Every module has both `quiz.md` and `quiz-answers.md`, and no answer text appears
+  in `quiz.md`.** Every question label in `quiz.md` has a matching entry in
+  `quiz-answers.md`, and vice versa — it is a set comparison, so state the totals:
+  questions written, answers written.
 - Every module has a hands-on exercise.
 - **Every concept tested in a quiz or exercise is taught in a lesson at or before that
   module.** This is a set comparison, not a judgement: the concepts appearing in
