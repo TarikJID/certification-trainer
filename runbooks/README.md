@@ -26,7 +26,7 @@ domains researched and taught properly beats five domains abandoned at four.
 
 ## Rules that belong in every prompt
 
-Every run prompt starts with `/certify` on its own line, pasted into a fresh session.
+Every run prompt starts with `/build-certification` on its own line, pasted into a fresh session.
 That is what loads the orchestrator. Without it the session is a developer's.
 
 Copy these into any run prompt. They are the two fences that stop a staged run from

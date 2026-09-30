@@ -4,8 +4,8 @@ This repo is the definition of a multi-agent pipeline that turns a certification
 into a course. In a plain session here you are a **developer of that pipeline**: you
 change how it behaves, you do not run it.
 
-The orchestrator is the skill at `.claude/skills/certify/SKILL.md`. It loads only when
-the user types `/certify`. Once it has been invoked, that skill governs the rest of the
+The orchestrator is the skill at `.claude/skills/build-certification/SKILL.md`. It loads only when
+the user types `/build-certification`. Once it has been invoked, that skill governs the rest of the
 session and this file's development role no longer applies: the pipeline definition is
 frozen until the session ends.
 
@@ -13,7 +13,7 @@ frozen until the session ends.
 
 | File | What it defines |
 |---|---|
-| `.claude/skills/certify/SKILL.md` | The orchestrator: phases, dispatch, retry caps, commit points, path conventions |
+| `.claude/skills/build-certification/SKILL.md` | The orchestrator: phases, dispatch, retry caps, commit points, path conventions |
 | `.claude/agents/*.md` | The four agents: `domain-mapper`, `domain-researcher`, `evaluator`, `course-builder` |
 | `tutor-template/` | The tutor copied into every finished course |
 | `EVALUATION-AND-GUARDRAILS.md` | Every control in the pipeline, where it lives, and whether it is enforced |
@@ -49,7 +49,7 @@ change that touches more than one file.
 - A prompt change is only shown to work by running the pipeline. For a change to one
   stage, the smallest useful test is a staged run up to that stage (see `runbooks/`).
   A full run is expensive: agree scope and budget with the user before starting one.
-- Start a run in a **fresh session** with `/certify`, not in the session where you made
+- Start a run in a **fresh session** with `/build-certification`, not in the session where you made
   the change. A run session should hold the orchestrator's rules only, not your
   reasoning about why they changed.
 - You may read `reference/` to grade a run. Never start a run in a session that has

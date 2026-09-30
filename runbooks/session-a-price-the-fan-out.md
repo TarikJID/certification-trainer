@@ -16,10 +16,10 @@ second-heaviest as the other.
 
 ## Prompt
 
-Start a fresh session and paste this whole block, `/certify` line included.
+Start a fresh session and paste this whole block, `/build-certification` line included.
 
 ```
-/certify
+/build-certification
 Scope: stages 4-5 only, TWO DOMAINS ONLY, then STOP.
 
 The domain map is already complete and has PASSED evaluation on this
@@ -36,7 +36,7 @@ DO:
    the domain map, plus the path to the archived exam guide.
 2. Commit their output.
 3. Evaluate each output with the evaluator, writing a verdict file per
-   the path convention in the certify skill.
+   the path convention in the build-certification skill.
 4. STOP.
 
 DO NOT:

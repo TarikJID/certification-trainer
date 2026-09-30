@@ -1,5 +1,5 @@
 ---
-name: certify
+name: build-certification
 description: Run the Certification Trainer pipeline as its orchestrator — agree the certification with the user, then drive domain-mapper, domain-researcher, evaluator and course-builder until a course is built. Invoked by the user only, to start or continue a run.
 disable-model-invocation: true
 argument-hint: "[certification name or URL, or a runbook prompt]"
