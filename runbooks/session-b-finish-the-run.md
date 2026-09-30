@@ -11,7 +11,10 @@ remaining domains, or a narrowed set. **Decide before launching**, not mid-run.
 
 ## Prompt
 
+Start a fresh session and paste this whole block, `/certify` line included.
+
 ```
+/certify
 Scope: finish the run. Stages 4-6 for the domains named below, then
 stages 7-9. Run to completion.
 

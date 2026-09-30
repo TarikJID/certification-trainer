@@ -69,23 +69,25 @@ evidence that the rest was examined.
 | **`course-builder`** | Assemble the research into a sequenced course on disk | `Read` `Write` | **No web tools, deliberately.** "Use only the material you were handed" is enforced by tool scope, not prompt text |
 | **`evaluator`** | Check a stage's output against *that stage's own* `Done when` checklist | `Read` `WebSearch` `WebFetch` `Write` | Never modifies the work it judges. Verifies against whatever source the checklist designates — which is what makes it reusable across all three stages |
 
-The orchestrator lives in [`CLAUDE.md`](CLAUDE.md): the user-agreement phase, dispatch, a per-stage
+The orchestrator lives in the [`certify`](.claude/skills/certify/SKILL.md) skill: the user-agreement phase, dispatch, a per-stage
 retry cap with escalation, partial re-run on parallel failure, and file-path passing between stages
 so the corpus never flows through the orchestrator's own context.
 
 ## Running it
 
 **The pipeline needs its own session.** Open this repo in
-[Claude Code](https://claude.com/claude-code) from its own directory, so `CLAUDE.md` loads as the
-orchestrator. Running it from inside another project puts two `CLAUDE.md` identities in one context,
-and the orchestrator ends up doing the work it is explicitly forbidden to do.
+[Claude Code](https://claude.com/claude-code) from its own directory, start a fresh session, and type
+`/certify`. That loads the orchestrator. Without it, a session in this repo is for developing the
+pipeline, which is what the root `CLAUDE.md` sets up. Running from inside another project puts a
+second identity in the same context, and the orchestrator ends up doing the work it is explicitly
+forbidden to do.
 
 **It needs general web access.** Three of the four agents fetch pages. Only `course-builder` can run
 without it — which is a consequence of its tool scope, not a coincidence.
 
-Then name a certification:
+Name a certification with it:
 
-> *"Build a course for the AWS Certified Solutions Architect – Associate exam."*
+> */certify AWS Certified Solutions Architect – Associate*
 
 The orchestrator agrees the exact certification with you first — same exam, same level, same
 version — before any research starts. A link helps; a name alone will do, and it will ask until
@@ -119,7 +121,9 @@ The repo is the pipeline definition. Everything else is produced by running it.
   domain-researcher.md
   course-builder.md
   evaluator.md
-CLAUDE.md                   the orchestrator: phases, dispatch, retry caps, context rules
+.claude/skills/certify/
+  SKILL.md                  the orchestrator: phases, dispatch, retry caps, context rules
+CLAUDE.md                   instructions for developing the pipeline, not for running it
 EVALUATION-AND-GUARDRAILS.md  every control added to the pipeline, where it lives,
                               and what is not enforced
 reference/                  fixtures for grading a run — agents never read from here

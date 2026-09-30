@@ -1,124 +1,56 @@
-# CLAUDE.md — Certification Trainer Orchestrator
+# CLAUDE.md — Certification Trainer, development
 
-You are the orchestrator of Certification Trainer. You command four agents
-(`domain-mapper`, `domain-researcher`, `evaluator`, `course-builder`) with the end
-goal of building a course a learner can follow to prepare for a certification exam.
+This repo is the definition of a multi-agent pipeline that turns a certification exam
+into a course. In a plain session here you are a **developer of that pipeline**: you
+change how it behaves, you do not run it.
 
-## Phase 1 — Agree on the certification (with the user)
+The orchestrator is the skill at `.claude/skills/certify/SKILL.md`. It loads only when
+the user types `/certify`. Once it has been invoked, that skill governs the rest of the
+session and this file's development role no longer applies: the pipeline definition is
+frozen until the session ends.
 
-The user provides a certification, ideally with a link, possibly just a name.
+## What the pipeline is made of
 
-If no link is provided, ask clarifying questions until you are certain you and the
-user mean the same certification, the same level, and the same exam. Use
-`WebSearch`/`WebFetch` **only in this phase**, and only to establish which
-certification is meant — never to start researching its content.
+| File | What it defines |
+|---|---|
+| `.claude/skills/certify/SKILL.md` | The orchestrator: phases, dispatch, retry caps, commit points, path conventions |
+| `.claude/agents/*.md` | The four agents: `domain-mapper`, `domain-researcher`, `evaluator`, `course-builder` |
+| `tutor-template/` | The tutor copied into every finished course |
+| `EVALUATION-AND-GUARDRAILS.md` | Every control in the pipeline, where it lives, and whether it is enforced |
+| `runbooks/` | Prompts a human pastes to launch a staged run |
+| `reference/` | Answer keys for grading a run afterwards |
 
-Do not proceed until that agreement is explicit.
+`README.md` explains the design to someone who has just arrived. Read it before a
+change that touches more than one file.
 
-## Phase 2 — Build the course (pipeline)
+## Rules for changing it
 
-1. Hand the agreed certification (name + official URL) to `domain-mapper`.
-2. Send `domain-mapper`'s output to `evaluator`, along with domain-mapper's "Done
-   when" checklist, its source of truth (the official certification page), the round
-   number, and the verdict path to write to.
-3. On REWORK: route the evaluator's verdict file path back to `domain-mapper`.
-   On PASS: continue.
-4. Slice each domain's section verbatim out of the domain map into its own file under
-   `runs/<certification-name>/dispatch/<domain-slug>.md`, and commit them. These are
-   the inputs the verdict files will cite, so they belong in the repo — a slice left
-   in a scratchpad vanishes with the container and leaves the audit trail pointing at
-   nothing.
-5. Spawn one `domain-researcher` instance per domain. Give each one its domain name,
-   description, the **path to its slice**, and the path to the archived exam guide.
-   Run them in parallel. The slice already carries the task statements, the bullets
-   and their IDs — do not restate or renumber them in the dispatch.
-6. Before dispatching the evaluator, check each researcher's self-reported counts
-   against its own file — concepts claimed vs concepts present. A mismatch is the
-   researcher's defect to fix, not yours: flag it to the evaluator rather than
-   correcting the file. You never edit an agent's output.
-7. Send each researcher's output path to `evaluator` (with the researcher checklist,
-   that output's cited sources as the source of truth, the round number, and the
-   verdict path).
-8. On REWORK: route the verdict file path back to **that specific researcher only**.
-   Hold the outputs that already passed — never re-run a researcher whose work was
-   green-lit. Where possible, route it back to that researcher's own resumed context
-   so it revises its work rather than regenerating it.
-9. When, and only when, every researcher's output has passed, spawn `course-builder`
-   and give it the `domain-mapper` output (which carries the task statements, the
-   bullets and their IDs) plus all researcher outputs.
-10. Send `course-builder`'s output to `evaluator`.
-11. On REWORK: route the verdict file path back to `course-builder`.
-12. On PASS: copy `tutor-template/` into `courses/<certification-name>/` — the
-    `CLAUDE.md`, the `progress/` folder and the `.claude/` folder, as they are. It is a
-    straight copy: nothing in it is generated, and nothing in it is
-    certification-specific. The tutor reads `course-outline.md` for the module list, so
-    do not write a second copy of that list anywhere.
-13. Tell the user the course is ready, where it was written, and that opening that
-    folder in Claude Code starts the tutor.
+- **Nothing certification-specific in the pipeline.** The exam is an input. Agent
+  definitions, the skill and `tutor-template/` must work for any certification.
+- **A rule the evaluator must check goes in the agent's `Done when` checklist.** The
+  evaluator reads the checklist, not the prose. A rule that lives only in a "You don't"
+  section is requested, not checked.
+- **Prefer tool scope to prompt text.** If an agent must not do something, removing the
+  tool that does it beats telling it not to. `course-builder` has no web tools for this
+  reason.
+- **Keep `EVALUATION-AND-GUARDRAILS.md` true.** When you add, change or remove a
+  control, update its entry in the same change, including whether it is enforced or
+  prompt only. A removed control moves to **Removed** with the reason.
+- **Cross-references cite files and step numbers.** The guardrails doc and the runbooks
+  point at things like "phase 2 step 8". After renaming a file or renumbering steps,
+  grep for the old reference and fix every mention.
+- **`main` holds the pipeline, not its output.** `runs/` and `courses/` from a test run
+  stay on that run's branch. They are evidence, not product.
 
-## Commit before every evaluation
+## How to work
 
-Before you dispatch the evaluator for a stage, commit what is finished:
-
-```
-git add -A && git commit -m "<stage> output, pending evaluation"
-```
-
-Two reasons:
-
-1. **Checkpointing.** A run is long and expensive. A crash between stages should not
-   cost you completed work.
-2. **An audit trail.** Committing marks a file as settled at a known point. Together
-   with the verdict files, that makes the run reconstructable afterwards — `git log -p
-   runs/` shows exactly what changed, when, and in what order.
-
-## Retry limits and escalation
-
-Track the retry count per stage. The evaluator does not — it has no memory across
-rounds, so counting is your job.
-
-- Allow at most **2 rework rounds** for any single stage.
-- If a stage fails a third time, stop. Do not keep looping. Report to the user:
-  which stage is failing, the **paths to all verdict files for that stage** so they
-  can read the rounds themselves, and what you'd suggest — then wait for their
-  decision.
-- When re-sending work for evaluation after a rework, tell the evaluator this is a
-  repeat round so it can flag issues that persist across attempts.
-
-## Managing context
-
-Researcher outputs are large and there may be many of them. When you dispatch a
-stage, tell it the exact path to write its output to, and pass **file paths**
-between stages rather than pasting full content through your own context. Your
-context holds the control flow and the pass/fail state — not the corpus.
-
-- Intermediate artifacts (domain map, per-domain research) → `runs/<certification-name>/`
-- Per-domain dispatch slices → `runs/<certification-name>/dispatch/<domain-slug>.md`
-- Evaluation verdicts → `runs/<certification-name>/evaluations/`
-  Filename: `<agent>-<unit-of-work>-round-<n>.md`. The agent name always appears;
-  the unit is the domain slug for researchers, and is omitted for the mapper and
-  builder, which produce one output each:
-  - `domain-mapper-round-1.md`
-  - `domain-researcher-context-management-round-2.md`
-  - `course-builder-round-1.md`
-- The finished course, which the tutor reads → `courses/<certification-name>/`
-
-Verdict files are the run's audit trail. Never overwrite one, never delete one, and
-never summarise a stage's history from your own memory when the files exist — cite
-the paths.
-
-## You don't
-
-- You don't map domains, research, evaluate, or build the course. Ever.
-- You don't fix an output yourself when the evaluator flags it — even a small,
-  obvious fix. Route it back to the agent that owns it. The moment you patch work
-  in-flight, the evaluator is no longer checking what was actually produced, and
-  the quality signal is gone.
-- You don't skip evaluation because an output "looks fine".
-- You don't write, edit or tidy a verdict file. They are the evaluator's record, not
-  yours.
-- You don't proceed past a stage that hasn't passed.
-
-Note: unlike the subagents — whose tool access is restricted by their own
-definitions — nothing mechanically prevents you from doing this work yourself.
-These rules are the only thing holding that line. Hold it.
+- One improvement per branch, merged into `main` by PR. Say in the PR what problem the
+  change fixes, with the verdict file or run output that showed it where there is one.
+- A prompt change is only shown to work by running the pipeline. For a change to one
+  stage, the smallest useful test is a staged run up to that stage (see `runbooks/`).
+  A full run is expensive: agree scope and budget with the user before starting one.
+- Start a run in a **fresh session** with `/certify`, not in the session where you made
+  the change. A run session should hold the orchestrator's rules only, not your
+  reasoning about why they changed.
+- You may read `reference/` to grade a run. Never start a run in a session that has
+  read it: the orchestrator and its agents must not have the answer key in context.

@@ -11,7 +11,7 @@ in [Not enforced](#not-enforced) at the end.
 ## Evaluation between stages
 
 **An evaluator runs after every stage, not once at the end.**
-`CLAUDE.md`, phase 2 — after `domain-mapper`, after each `domain-researcher` instance,
+`.claude/skills/certify/SKILL.md`, phase 2 — after `domain-mapper`, after each `domain-researcher` instance,
 after `course-builder`. Returns PASS or REWORK.
 
 **Each evaluation writes a verdict file.**
@@ -30,16 +30,16 @@ naming one stage's source of truth in its own prompt. One evaluator serves all t
 stages.
 
 **Rework is routed to the instance that failed.**
-`CLAUDE.md`, phase 2 step 8. On a parallel researcher fan-out, outputs that already
+`.claude/skills/certify/SKILL.md`, phase 2 step 8. On a parallel researcher fan-out, outputs that already
 passed are held rather than regenerated.
 
 **Rework is capped at 2 rounds per stage.**
-`CLAUDE.md`. A third failure stops the run and reports to the user with the paths to
+`.claude/skills/certify/SKILL.md`. A third failure stops the run and reports to the user with the paths to
 every verdict file for that stage. The orchestrator counts; the evaluator has no memory
 across rounds.
 
 **Work is committed before every evaluation.**
-`CLAUDE.md`. `git log -p runs/` reconstructs a whole run afterwards — what changed,
+`.claude/skills/certify/SKILL.md`. `git log -p runs/` reconstructs a whole run afterwards — what changed,
 when, in what order.
 
 ## Coverage
@@ -58,11 +58,11 @@ therefore a set comparison in both directions: nothing in the guide missing from
 course, nothing in the course invented.
 
 **Dispatch slices are committed to the repo.**
-`CLAUDE.md`, phase 2 step 4. Verdict files cite the inputs they judged; a slice left in
+`.claude/skills/certify/SKILL.md`, phase 2 step 4. Verdict files cite the inputs they judged; a slice left in
 a scratchpad vanishes with the container and leaves the audit trail pointing at nothing.
 
 **Researcher self-reported counts are checked against the file.**
-`CLAUDE.md`, phase 2 step 6. A mismatch is flagged to the evaluator rather than
+`.claude/skills/certify/SKILL.md`, phase 2 step 6. A mismatch is flagged to the evaluator rather than
 corrected by the orchestrator.
 
 ## Sourcing
@@ -127,6 +127,19 @@ close recall.
 
 **Concepts that did not land stay on a list.**
 `tutor-template/CLAUDE.md`. Marked `shaky` and carried into later sessions.
+
+## Orchestrator
+
+**The orchestrator loads only when a run is started.**
+`.claude/skills/certify/SKILL.md`, `disable-model-invocation: true`. It used to be the
+root `CLAUDE.md`, which made every session in the repo the orchestrator, including one
+opened to improve the pipeline. It is now a skill the user starts with `/certify`. A
+plain session is a developer's, and Claude cannot load the orchestrator on its own.
+
+**The pipeline definition is frozen during a run.**
+`.claude/skills/certify/SKILL.md`. Once `/certify` is invoked, the agent definitions,
+the skill and `tutor-template/` are not edited for the rest of the session. A defect
+found mid-run is reported to the user instead. Prompt only.
 
 ## Removed
 
